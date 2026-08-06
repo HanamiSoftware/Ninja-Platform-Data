@@ -1,0 +1,29 @@
+{
+    "name": "@hanami/platform-data",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "generate": "drizzle-kit generate",
+        "migrate": "drizzle-kit migrate",
+        "studio": "drizzle-kit studio",
+        "lint": "eslint .",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "drizzle-orm": "^0.44.0",
+        "postgres": "^3.4.7",
+        "postgresql": "^0.0.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^26.1.2",
+        "drizzle-kit": "^0.31.0",
+        "eslint": "^10.8.0",
+        "prettier": "^3.9.6",
+        "tsx": "^4.23.9",
+        "typescript": "^5.9.0",
+        "typescript-eslint": "^8.66.0"
+    }
+}
