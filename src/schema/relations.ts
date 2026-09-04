@@ -26,17 +26,25 @@ export const productsRelations = relations(products, ({many}) => ({
 	subscriptions: many(subscriptions),
 }));
 
-export const subscriptionsRelations = relations(subscriptions, ({one}) => ({
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
 	user: one(users, {
 		fields: [subscriptions.userId],
-		references: [users.id]
+		references: [users.id],
 	}),
+
 	product: one(products, {
 		fields: [subscriptions.productId],
-		references: [products.id]
+		references: [products.id],
 	}),
+
 	plan: one(plans, {
-		fields: [subscriptions.productId],
-		references: [plans.id]
+		fields: [
+			subscriptions.productId,
+			subscriptions.planId,
+		],
+		references: [
+			plans.id,
+			plans.productId,
+		],
 	}),
 }));

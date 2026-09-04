@@ -1,6 +1,6 @@
 {
-  "id": "866df674-75a8-42ae-be3e-7162cac35f94",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c5fd4aab-639f-4709-abc8-588fb9861d96",
+  "prevId": "dd1b9bd8-956b-45e1-b0be-00092b037037",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -18,6 +18,12 @@
         "user_id": {
           "name": "user_id",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "client_id": {
+          "name": "client_id",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -75,14 +81,14 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "timestamptz_ops"
+              "opclass": "uuid_ops"
             },
             {
               "expression": "expires_at",
               "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "uuid_ops"
+              "opclass": "timestamptz_ops"
             }
           ],
           "isUnique": false,
@@ -492,12 +498,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "uq_users_auth_identity": {
-          "name": "uq_users_auth_identity",
+        "uq_users_auth_subject": {
+          "name": "uq_users_auth_subject",
           "nullsNotDistinct": false,
           "columns": [
-            "auth_subject",
-            "auth_provider"
+            "auth_subject"
           ]
         }
       },

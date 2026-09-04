@@ -1,0 +1,1 @@
+ALTER TABLE "auth_sessions" ADD COLUMN "client_id" varchar(255) NOT NULL;

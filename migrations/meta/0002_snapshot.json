@@ -1,6 +1,6 @@
 {
-  "id": "866df674-75a8-42ae-be3e-7162cac35f94",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "dd1b9bd8-956b-45e1-b0be-00092b037037",
+  "prevId": "be3c28c6-59aa-4dcf-a884-aad51e6a45bb",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -75,14 +75,14 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "timestamptz_ops"
+              "opclass": "uuid_ops"
             },
             {
               "expression": "expires_at",
               "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "uuid_ops"
+              "opclass": "timestamptz_ops"
             }
           ],
           "isUnique": false,
@@ -492,12 +492,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "uq_users_auth_identity": {
-          "name": "uq_users_auth_identity",
+        "uq_users_auth_subject": {
+          "name": "uq_users_auth_subject",
           "nullsNotDistinct": false,
           "columns": [
-            "auth_subject",
-            "auth_provider"
+            "auth_subject"
           ]
         }
       },

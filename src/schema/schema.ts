@@ -23,12 +23,13 @@ export const users = pgTable("users", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: 'string' }),
 }, (table) => [
-	unique("uq_users_auth_identity").on(table.authSubject, table.authProvider),
+	unique("uq_users_auth_subject").on(table.authSubject),
 ]);
 
 export const authSessions = pgTable("auth_sessions", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	userId: uuid("user_id").notNull(),
+	clientId: varchar("client_id", { length: 255 }).notNull(), 
 	sessionHash: char("session_hash", { length: 64 }).notNull(),
 	refreshTokenEncrypted: text("refresh_token_encrypted").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
@@ -37,7 +38,7 @@ export const authSessions = pgTable("auth_sessions", {
 	absoluteExpiresAt: timestamp("absolute_expires_at", { withTimezone: true, mode: 'string' }).notNull(),
 	revokedAt: timestamp("revoked_at", { withTimezone: true, mode: 'string' }),
 }, (table) => [
-	index("idx_auth_sessions_active").using("btree", table.userId.asc().nullsLast().op("timestamptz_ops"), table.expiresAt.asc().nullsLast().op("uuid_ops")).where(sql`(revoked_at IS NULL)`),
+	index("idx_auth_sessions_active").using("btree", table.userId.asc().nullsLast().op("uuid_ops"), table.expiresAt.asc().nullsLast().op("timestamptz_ops")).where(sql`(revoked_at IS NULL)`),
 	index("idx_auth_sessions_user_id").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
 	foreignKey({
 			columns: [table.userId],

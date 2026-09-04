@@ -55,13 +55,12 @@ CREATE TABLE "users" (
 	CONSTRAINT "uq_users_auth_identity" UNIQUE("auth_subject","auth_provider")
 );
 --> statement-breakpoint
-DROP TABLE "identity_users" CASCADE;--> statement-breakpoint
 ALTER TABLE "auth_sessions" ADD CONSTRAINT "auth_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "plans" ADD CONSTRAINT "plans_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "fk_subscription_plan_product" FOREIGN KEY ("product_id","plan_id") REFERENCES "public"."plans"("id","product_id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_auth_sessions_active" ON "auth_sessions" USING btree ("user_id" timestamptz_ops,"expires_at" uuid_ops) WHERE (revoked_at IS NULL);--> statement-breakpoint
+CREATE INDEX "idx_auth_sessions_active" ON "auth_sessions" USING btree ("user_id" uuid_ops ,"expires_at" timestamptz_ops) WHERE (revoked_at IS NULL);--> statement-breakpoint
 CREATE INDEX "idx_auth_sessions_user_id" ON "auth_sessions" USING btree ("user_id" uuid_ops);--> statement-breakpoint
 CREATE INDEX "idx_subscriptions_user_product" ON "subscriptions" USING btree ("user_id" uuid_ops,"product_id" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "uq_active_subscription_per_product" ON "subscriptions" USING btree ("user_id" uuid_ops,"product_id" uuid_ops) WHERE ((status)::text = ANY ((ARRAY['trialing'::character varying, 'active'::character varying, 'past_due'::character varying])::text[]));
