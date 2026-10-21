@@ -1,4 +1,4 @@
-import { pgTable, unique, uuid, varchar, timestamp, text, index, foreignKey, char, uniqueIndex, check } from "drizzle-orm/pg-core"
+import { pgTable, unique, uuid, varchar, timestamp, text, index, foreignKey, char, uniqueIndex, check, integer } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -94,3 +94,95 @@ export const subscriptions = pgTable("subscriptions", {
 		}).onDelete("restrict"),
 	check("chk_subscription_status", sql`(status)::text = ANY ((ARRAY['trialing'::character varying, 'active'::character varying, 'past_due'::character varying, 'cancelled'::character varying, 'expired'::character varying])::text[])`),
 ]);
+
+
+export const apiKeys = pgTable("api_keys", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+
+	userId: uuid("user_id").notNull(),
+	productId: uuid("product_id").notNull(),
+
+	// SHA-256 esadecimale della chiave: mai il segreto in chiaro.
+	keyHash: char("key_hash", { length: 64 }).notNull(),
+	keyPrefix: varchar("key_prefix", { length: 16 }).notNull(),
+
+	name: varchar({ length: 100 }),
+
+	// Limite applicato dal worker secondo la finestra
+	// temporale prevista dal relativo algoritmo.
+	rateLimit: integer("rate_limit").notNull(),
+
+	createdAt: timestamp("created_at", {
+		withTimezone: true,
+		mode: "string",
+	}).defaultNow().notNull(),
+
+	lastUsedAt: timestamp("last_used_at", {
+		withTimezone: true,
+		mode: "string",
+	}),
+
+	expiresAt: timestamp("expires_at", {
+		withTimezone: true,
+		mode: "string",
+	}),
+
+	revokedAt: timestamp("revoked_at", {
+		withTimezone: true,
+		mode: "string",
+	}),
+}, (table) => [
+	unique("uq_api_keys_hash").on(table.keyHash),
+
+	index("idx_api_keys_user_product").on(
+		table.userId,
+		table.productId,
+	),
+
+	foreignKey({
+		columns: [table.userId],
+		foreignColumns: [users.id],
+		name: "api_keys_user_id_fkey",
+	}).onDelete("cascade"),
+
+	foreignKey({
+		columns: [table.productId],
+		foreignColumns: [products.id],
+		name: "api_keys_product_id_fkey",
+	}).onDelete("restrict"),
+]);
+
+export const links = pgTable("links", {
+	id: varchar({ length: 64 }).primaryKey().notNull(),
+	slug: varchar({ length: 32 }).notNull(),
+	target: text().notNull(),
+	userId: uuid("user_id").notNull(),
+	createdAt: timestamp("created_at", {
+		withTimezone: true,
+		mode: "string",
+	}).notNull(),
+	updatedAt: timestamp("updated_at", {
+		withTimezone: true,
+		mode: "string",
+	}).defaultNow().notNull(),
+	expiresAt: timestamp("expires_at", {
+		withTimezone: true,
+		mode: "string",
+	}),
+}, (table) => [
+	unique("uq_links_slug").on(table.slug),
+	index("idx_links_user_created_at").on(
+		table.userId,
+		table.createdAt,
+	),
+	foreignKey({
+		columns: [table.userId],
+		foreignColumns: [users.id],
+		name: "links_user_id_fkey",
+	}).onDelete("cascade"),
+	check(
+		"chk_links_slug_format",
+		sql`slug ~ '^[A-Za-z0-9_-]{3,32}$'`,
+	),
+]);
+

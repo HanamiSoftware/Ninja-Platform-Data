@@ -2,21 +2,33 @@
 <Project>
   <PropertyGroup>
     <PackageJsonName Condition="$(PackageJsonName) == ''">@hanami/platform-data</PackageJsonName>
-    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.1.0</PackageJsonVersion>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.1.1</PackageJsonVersion>
     <PackageJsonPrivate Condition="$(PackageJsonPrivate) == ''">true</PackageJsonPrivate>
     <PackageJsonType Condition="$(PackageJsonType) == ''">module</PackageJsonType>
+    <PackageJsonDescription Condition="$(PackageJsonDescription) == ''">Shared database schema and data access for the Ninja Platform</PackageJsonDescription>
+    <PackageJsonMain Condition="$(PackageJsonMain) == ''">./dist/index.js</PackageJsonMain>
+    <PackageJsonTypes Condition="$(PackageJsonTypes) == ''">./dist/index.d.ts</PackageJsonTypes>
+    <PackageJsonExportsTypes Condition="$(PackageJsonExportsTypes) == ''">./dist/index.d.ts</PackageJsonExportsTypes>
+    <PackageJsonExportsImport Condition="$(PackageJsonExportsImport) == ''">./dist/index.js</PackageJsonExportsImport>
+    <PackageJsonFiles Condition="$(PackageJsonFiles) == ''">[
+  "dist",
+  "README.md"
+]</PackageJsonFiles>
+    <PackageJsonScriptsBuild Condition="$(PackageJsonScriptsBuild) == ''">tsc -p tsconfig.json</PackageJsonScriptsBuild>
+    <PackageJsonScriptsTypecheck Condition="$(PackageJsonScriptsTypecheck) == ''">tsc --noEmit -p tsconfig.json</PackageJsonScriptsTypecheck>
+    <PackageJsonScriptsPrepare Condition="$(PackageJsonScriptsPrepare) == ''">npm run build</PackageJsonScriptsPrepare>
     <PackageJsonScriptsGenerate Condition="$(PackageJsonScriptsGenerate) == ''">drizzle-kit generate</PackageJsonScriptsGenerate>
     <PackageJsonScriptsMigrate Condition="$(PackageJsonScriptsMigrate) == ''">drizzle-kit migrate</PackageJsonScriptsMigrate>
     <PackageJsonScriptsStudio Condition="$(PackageJsonScriptsStudio) == ''">drizzle-kit studio</PackageJsonScriptsStudio>
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint .</PackageJsonScriptsLint>
     <PackageJsonScriptsFormat Condition="$(PackageJsonScriptsFormat) == ''">prettier --write .</PackageJsonScriptsFormat>
     <PackageJsonDependenciesDotenv Condition="$(PackageJsonDependenciesDotenv) == ''">^17.4.2</PackageJsonDependenciesDotenv>
-    <PackageJsonDependenciesDrizzleOrm Condition="$(PackageJsonDependenciesDrizzleOrm) == ''">^0.44.0</PackageJsonDependenciesDrizzleOrm>
-    <PackageJsonDependenciesPostgres Condition="$(PackageJsonDependenciesPostgres) == ''">^3.4.7</PackageJsonDependenciesPostgres>
+    <PackageJsonDependenciesDrizzleOrm Condition="$(PackageJsonDependenciesDrizzleOrm) == ''">^0.45.4</PackageJsonDependenciesDrizzleOrm>
+    <PackageJsonDependenciesPostgres Condition="$(PackageJsonDependenciesPostgres) == ''">^3.4.9</PackageJsonDependenciesPostgres>
     <PackageJsonDependenciesPostgresql Condition="$(PackageJsonDependenciesPostgresql) == ''">^0.0.1</PackageJsonDependenciesPostgresql>
     <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^10.0.1</PackageJsonDevdependenciesEslintJs>
     <PackageJsonDevdependenciesTypesNode Condition="$(PackageJsonDevdependenciesTypesNode) == ''">^26.1.2</PackageJsonDevdependenciesTypesNode>
-    <PackageJsonDevdependenciesDrizzleKit Condition="$(PackageJsonDevdependenciesDrizzleKit) == ''">^0.31.0</PackageJsonDevdependenciesDrizzleKit>
+    <PackageJsonDevdependenciesDrizzleKit Condition="$(PackageJsonDevdependenciesDrizzleKit) == ''">^0.31.11</PackageJsonDevdependenciesDrizzleKit>
     <PackageJsonDevdependenciesEslint Condition="$(PackageJsonDevdependenciesEslint) == ''">^10.8.0</PackageJsonDevdependenciesEslint>
     <PackageJsonDevdependenciesPrettier Condition="$(PackageJsonDevdependenciesPrettier) == ''">^3.9.6</PackageJsonDevdependenciesPrettier>
     <PackageJsonDevdependenciesTsx Condition="$(PackageJsonDevdependenciesTsx) == ''">^4.23.9</PackageJsonDevdependenciesTsx>

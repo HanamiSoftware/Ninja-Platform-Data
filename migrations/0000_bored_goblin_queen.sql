@@ -1,6 +1,22 @@
+CREATE TABLE "api_keys" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"product_id" uuid NOT NULL,
+	"key_hash" char(64) NOT NULL,
+	"key_prefix" varchar(16) NOT NULL,
+	"name" varchar(100),
+	"rate_limit" integer NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"last_used_at" timestamp with time zone,
+	"expires_at" timestamp with time zone,
+	"revoked_at" timestamp with time zone,
+	CONSTRAINT "uq_api_keys_hash" UNIQUE("key_hash")
+);
+--> statement-breakpoint
 CREATE TABLE "auth_sessions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
+	"client_id" varchar(255) NOT NULL,
 	"session_hash" char(64) NOT NULL,
 	"refresh_token_encrypted" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -9,6 +25,18 @@ CREATE TABLE "auth_sessions" (
 	"absolute_expires_at" timestamp with time zone NOT NULL,
 	"revoked_at" timestamp with time zone,
 	CONSTRAINT "auth_sessions_session_hash_key" UNIQUE("session_hash")
+);
+--> statement-breakpoint
+CREATE TABLE "links" (
+	"id" varchar(64) PRIMARY KEY NOT NULL,
+	"slug" varchar(32) NOT NULL,
+	"target" text NOT NULL,
+	"user_id" uuid NOT NULL,
+	"created_at" timestamp with time zone NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"expires_at" timestamp with time zone,
+	CONSTRAINT "uq_links_slug" UNIQUE("slug"),
+	CONSTRAINT "chk_links_slug_format" CHECK (slug ~ '^[A-Za-z0-9_-]{3,32}$')
 );
 --> statement-breakpoint
 CREATE TABLE "plans" (
@@ -52,15 +80,20 @@ CREATE TABLE "users" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"last_login_at" timestamp with time zone,
-	CONSTRAINT "uq_users_auth_identity" UNIQUE("auth_subject","auth_provider")
+	CONSTRAINT "uq_users_auth_subject" UNIQUE("auth_subject")
 );
 --> statement-breakpoint
+ALTER TABLE "api_keys" ADD CONSTRAINT "api_keys_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "api_keys" ADD CONSTRAINT "api_keys_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "auth_sessions" ADD CONSTRAINT "auth_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "links" ADD CONSTRAINT "links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "plans" ADD CONSTRAINT "plans_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "fk_subscription_plan_product" FOREIGN KEY ("product_id","plan_id") REFERENCES "public"."plans"("id","product_id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_auth_sessions_active" ON "auth_sessions" USING btree ("user_id" uuid_ops ,"expires_at" timestamptz_ops) WHERE (revoked_at IS NULL);--> statement-breakpoint
+CREATE INDEX "idx_api_keys_user_product" ON "api_keys" USING btree ("user_id","product_id");--> statement-breakpoint
+CREATE INDEX "idx_auth_sessions_active" ON "auth_sessions" USING btree ("user_id" uuid_ops,"expires_at" timestamptz_ops) WHERE (revoked_at IS NULL);--> statement-breakpoint
 CREATE INDEX "idx_auth_sessions_user_id" ON "auth_sessions" USING btree ("user_id" uuid_ops);--> statement-breakpoint
+CREATE INDEX "idx_links_user_created_at" ON "links" USING btree ("user_id","created_at");--> statement-breakpoint
 CREATE INDEX "idx_subscriptions_user_product" ON "subscriptions" USING btree ("user_id" uuid_ops,"product_id" uuid_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "uq_active_subscription_per_product" ON "subscriptions" USING btree ("user_id" uuid_ops,"product_id" uuid_ops) WHERE ((status)::text = ANY ((ARRAY['trialing'::character varying, 'active'::character varying, 'past_due'::character varying])::text[]));

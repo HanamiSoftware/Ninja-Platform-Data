@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, authSessions, products, plans, subscriptions } from "./schema";
+import { users, authSessions, products, plans, subscriptions,links, apiKeys} from "./schema.js";
 
 export const authSessionsRelations = relations(authSessions, ({one}) => ({
 	user: one(users, {
@@ -11,6 +11,8 @@ export const authSessionsRelations = relations(authSessions, ({one}) => ({
 export const usersRelations = relations(users, ({many}) => ({
 	authSessions: many(authSessions),
 	subscriptions: many(subscriptions),
+	links: many(links),
+	apiKeys: many(apiKeys),
 }));
 
 export const plansRelations = relations(plans, ({one, many}) => ({
@@ -24,6 +26,7 @@ export const plansRelations = relations(plans, ({one, many}) => ({
 export const productsRelations = relations(products, ({many}) => ({
 	plans: many(plans),
 	subscriptions: many(subscriptions),
+	apiKeys: many(apiKeys),
 }));
 
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
@@ -46,5 +49,23 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
 			plans.id,
 			plans.productId,
 		],
+	}),
+}));
+
+export const linksRelations = relations(links, ({ one }) => ({
+	user: one(users, {
+		fields: [links.userId],
+		references: [users.id],
+	}),
+}));
+
+export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
+	user: one(users, {
+		fields: [apiKeys.userId],
+		references: [users.id],
+	}),
+	product: one(products, {
+		fields: [apiKeys.productId],
+		references: [products.id],
 	}),
 }));

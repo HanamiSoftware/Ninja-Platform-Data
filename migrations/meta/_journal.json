@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1787269289687,
-      "tag": "0000_fluffy_spot",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1788104613422,
-      "tag": "0001_productive_texas_twister",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1788104842915,
-      "tag": "0002_plain_demogoblin",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1788181997044,
-      "tag": "0003_calm_blue_shield",
+      "when": 1792591914090,
+      "tag": "0000_bored_goblin_queen",
       "breakpoints": true
     }
   ]
