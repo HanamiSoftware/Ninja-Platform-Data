@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup>
     <PackageJsonName Condition="$(PackageJsonName) == ''">@hanami/platform-data</PackageJsonName>
-    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">v0.1.2</PackageJsonVersion>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.1.2</PackageJsonVersion>
     <PackageJsonPrivate Condition="$(PackageJsonPrivate) == ''">true</PackageJsonPrivate>
     <PackageJsonType Condition="$(PackageJsonType) == ''">module</PackageJsonType>
     <PackageJsonDescription Condition="$(PackageJsonDescription) == ''">Shared database schema and data access for the Ninja Platform</PackageJsonDescription>
