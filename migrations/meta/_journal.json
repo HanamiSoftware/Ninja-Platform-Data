@@ -8,6 +8,13 @@
       "when": 1792591914090,
       "tag": "0000_bored_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792743094542,
+      "tag": "0001_easy_medusa",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@hanami/platform-data",
-  "version": "0.1.1",
+  "version": "v0.1.2",
   "private": true,
   "type": "module",
   "description": "Shared database schema and data access for the Ninja Platform",

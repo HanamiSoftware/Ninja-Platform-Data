@@ -6,6 +6,8 @@ export declare const usersRelations: import("drizzle-orm").Relations<"users", {
     subscriptions: import("drizzle-orm").Many<"subscriptions">;
     links: import("drizzle-orm").Many<"links">;
     apiKeys: import("drizzle-orm").Many<"api_keys">;
+    domains: import("drizzle-orm").Many<"domains">;
+    linkSyncJobs: import("drizzle-orm").Many<"link_sync_jobs">;
 }>;
 export declare const plansRelations: import("drizzle-orm").Relations<"plans", {
     product: import("drizzle-orm").One<"products", true>;
@@ -21,7 +23,15 @@ export declare const subscriptionsRelations: import("drizzle-orm").Relations<"su
     product: import("drizzle-orm").One<"products", true>;
     plan: import("drizzle-orm").One<"plans", true>;
 }>;
+export declare const domainsRelations: import("drizzle-orm").Relations<"domains", {
+    owner: import("drizzle-orm").One<"users", false>;
+    links: import("drizzle-orm").Many<"links">;
+}>;
 export declare const linksRelations: import("drizzle-orm").Relations<"links", {
+    user: import("drizzle-orm").One<"users", true>;
+    domain: import("drizzle-orm").One<"domains", true>;
+}>;
+export declare const linkSyncJobsRelations: import("drizzle-orm").Relations<"link_sync_jobs", {
     user: import("drizzle-orm").One<"users", true>;
 }>;
 export declare const apiKeysRelations: import("drizzle-orm").Relations<"api_keys", {
