@@ -15,6 +15,13 @@
       "when": 1792743094542,
       "tag": "0001_easy_medusa",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792851052424,
+      "tag": "0002_long_spiral",
+      "breakpoints": true
     }
   ]
 }

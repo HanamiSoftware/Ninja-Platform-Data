@@ -312,7 +312,7 @@ export const links = pgTable(
     createdAt: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
-    }).notNull(),
+    }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", {
       withTimezone: true,
       mode: "string",

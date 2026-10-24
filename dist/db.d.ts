@@ -1197,7 +1197,7 @@ export declare function createDb(connectionString: string): import("drizzle-orm/
                 data: string;
                 driverParam: string;
                 notNull: true;
-                hasDefault: false;
+                hasDefault: true;
                 isPrimaryKey: false;
                 isAutoincrement: false;
                 hasRuntimeDefault: false;
