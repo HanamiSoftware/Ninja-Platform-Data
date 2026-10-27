@@ -524,9 +524,10 @@ export const linkEntitlements = pgTable(
   },
   (table) => [
     index("idx_link_entitlements_link").on(table.linkId),
-    uniqueIndex("uq_active_link_entitlement")
-      .on(table.linkId, table.capabilityId)
-      .where(sql`revoked_at IS NULL`),
+    index("idx_link_entitlements_link_capability").on(
+      table.linkId,
+      table.capabilityId,
+    ),
     foreignKey({
       columns: [table.linkId],
       foreignColumns: [links.id],
