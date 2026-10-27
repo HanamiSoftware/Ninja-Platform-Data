@@ -178,7 +178,7 @@ export const subscriptions = pgTable(
     }).onDelete("restrict"),
     foreignKey({
       columns: [table.productId, table.planId],
-      foreignColumns: [plans.id, plans.productId],
+      foreignColumns: [plans.productId, plans.id],
       name: "fk_subscription_plan_product",
     }).onDelete("restrict"),
     check(
