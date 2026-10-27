@@ -45,7 +45,7 @@ CREATE INDEX "idx_capabilities_product_scope" ON "capabilities" USING btree ("pr
 --> statement-breakpoint
 CREATE INDEX "idx_link_entitlements_link" ON "link_entitlements" USING btree ("link_id");
 --> statement-breakpoint
-CREATE UNIQUE INDEX "uq_active_link_entitlement" ON "link_entitlements" USING btree ("link_id", "capability_id") WHERE revoked_at IS NULL;
+CREATE INDEX "idx_link_entitlements_link_capability" ON "link_entitlements" USING btree ("link_id", "capability_id");
 --> statement-breakpoint
 INSERT INTO "capabilities" ("product_id", "code", "scope", "description")
 SELECT product.id, seed.code, seed.scope, seed.description
