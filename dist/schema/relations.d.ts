@@ -38,3 +38,16 @@ export declare const apiKeysRelations: import("drizzle-orm").Relations<"api_keys
     user: import("drizzle-orm").One<"users", true>;
     product: import("drizzle-orm").One<"products", true>;
 }>;
+export declare const capabilitiesRelations: import("drizzle-orm").Relations<"capabilities", {
+    product: import("drizzle-orm").One<"products", true>;
+    planCapabilities: import("drizzle-orm").Many<"plan_capabilities">;
+    linkEntitlements: import("drizzle-orm").Many<"link_entitlements">;
+}>;
+export declare const planCapabilitiesRelations: import("drizzle-orm").Relations<"plan_capabilities", {
+    plan: import("drizzle-orm").One<"plans", true>;
+    capability: import("drizzle-orm").One<"capabilities", true>;
+}>;
+export declare const linkEntitlementsRelations: import("drizzle-orm").Relations<"link_entitlements", {
+    link: import("drizzle-orm").One<"links", true>;
+    capability: import("drizzle-orm").One<"capabilities", true>;
+}>;

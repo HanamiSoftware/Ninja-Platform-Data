@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, authSessions, products, plans, subscriptions, links, apiKeys, domains, linkSyncJobs, } from "./schema.js";
+import { users, authSessions, products, plans, subscriptions, links, apiKeys, domains, linkSyncJobs, capabilities, planCapabilities, linkEntitlements, } from "./schema.js";
 export const authSessionsRelations = relations(authSessions, ({ one }) => ({
     user: one(users, {
         fields: [authSessions.userId],
@@ -41,8 +41,8 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
             subscriptions.planId,
         ],
         references: [
-            plans.id,
             plans.productId,
+            plans.id,
         ],
     }),
 }));
@@ -77,5 +77,33 @@ export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
     product: one(products, {
         fields: [apiKeys.productId],
         references: [products.id],
+    }),
+}));
+export const capabilitiesRelations = relations(capabilities, ({ one, many }) => ({
+    product: one(products, {
+        fields: [capabilities.productId],
+        references: [products.id],
+    }),
+    planCapabilities: many(planCapabilities),
+    linkEntitlements: many(linkEntitlements),
+}));
+export const planCapabilitiesRelations = relations(planCapabilities, ({ one }) => ({
+    plan: one(plans, {
+        fields: [planCapabilities.productId, planCapabilities.planId],
+        references: [plans.productId, plans.id],
+    }),
+    capability: one(capabilities, {
+        fields: [planCapabilities.productId, planCapabilities.capabilityId],
+        references: [capabilities.productId, capabilities.id],
+    }),
+}));
+export const linkEntitlementsRelations = relations(linkEntitlements, ({ one }) => ({
+    link: one(links, {
+        fields: [linkEntitlements.linkId],
+        references: [links.id],
+    }),
+    capability: one(capabilities, {
+        fields: [linkEntitlements.capabilityId],
+        references: [capabilities.id],
     }),
 }));
