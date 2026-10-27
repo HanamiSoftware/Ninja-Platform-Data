@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-workers:
-    name: Install, typecheck and test workers
+  test-data:
+    name: Install, typecheck and test Source
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -40,9 +40,9 @@ jobs:
       - name: Typecheck Source Data
         run: npx tsc --noEmit -p src/tsconfig.json
         
-      - name: Test Source Data
+      - name: Test Connection to Database
         env:
           # The current create-worker tests do not connect to Postgres; this valid local URL
           # only lets Miniflare initialize the Hyperdrive binding.
-          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: "postgres://test:test@127.0.0.1:5432/test"
-        run: npm run test src/index.ts -- --run
+          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: ${{secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE}}
+        run: npm run src/test-db.ts
