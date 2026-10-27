@@ -1,0 +1,48 @@
+name: Platform Data CI
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - ".github/workflows/platform-data-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-data-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-workers:
+    name: Install, typecheck and test workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Typecheck Source Data
+        run: npx tsc --noEmit -p src/tsconfig.json
+        
+      - name: Test Source Data
+        env:
+          # The current create-worker tests do not connect to Postgres; this valid local URL
+          # only lets Miniflare initialize the Hyperdrive binding.
+          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: "postgres://test:test@127.0.0.1:5432/test"
+        run: npm run test src/index.ts -- --run
