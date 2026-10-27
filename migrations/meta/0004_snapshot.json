@@ -1,6 +1,6 @@
 {
-  "id": "e5cdb5b8-8b53-4d9a-8c9d-7c7b2a7e0004",
-  "prevId": "a9c81c46-27d1-4d2c-a7a4-7d68a6d7f4c2",
+  "id": "fa6d2f31-4d9e-48ac-bcf5-000000000005",
+  "prevId": "e5cdb5b8-8b53-4d9a-8c9d-7c7b2a7e0004",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -996,8 +996,8 @@
             "plan_id"
           ],
           "columnsTo": [
-            "id",
-            "product_id"
+            "product_id",
+            "id"
           ],
           "onDelete": "restrict",
           "onUpdate": "no action"
