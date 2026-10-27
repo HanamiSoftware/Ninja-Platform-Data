@@ -10,6 +10,9 @@ import {
   apiKeys,
   domains,
   linkSyncJobs,
+  capabilities,
+  planCapabilities,
+  linkEntitlements,
 } from "./schema.js";
 
 export const authSessionsRelations = relations(
@@ -111,3 +114,44 @@ export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+
+export const capabilitiesRelations = relations(
+  capabilities,
+  ({ one, many }) => ({
+    product: one(products, {
+      fields: [capabilities.productId],
+      references: [products.id],
+    }),
+    planCapabilities: many(planCapabilities),
+    linkEntitlements: many(linkEntitlements),
+  }),
+);
+
+export const planCapabilitiesRelations = relations(
+  planCapabilities,
+  ({ one }) => ({
+    plan: one(plans, {
+      fields: [planCapabilities.productId, planCapabilities.planId],
+      references: [plans.productId, plans.id],
+    }),
+    capability: one(capabilities, {
+      fields: [planCapabilities.productId, planCapabilities.capabilityId],
+      references: [capabilities.productId, capabilities.id],
+    }),
+  }),
+);
+
+export const linkEntitlementsRelations = relations(
+  linkEntitlements,
+  ({ one }) => ({
+    link: one(links, {
+      fields: [linkEntitlements.linkId],
+      references: [links.id],
+    }),
+    capability: one(capabilities, {
+      fields: [linkEntitlements.capabilityId],
+      references: [capabilities.id],
+    }),
+  }),
+);
