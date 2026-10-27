@@ -81,8 +81,7 @@ SELECT
   plan.id,
   capability.id,
   CASE
-    -- Analytics remain disabled in persisted plan rules until their endpoints ship.
-    WHEN capability.code IN ('link.create', 'link.customSlug', 'qr.generate') THEN true
+    WHEN capability.code IN ('link.create', 'link.customSlug', 'analytics.basic', 'analytics.history', 'qr.generate') THEN true
     WHEN capability.code = 'link.customDomain' THEN plan.code IN ('pro', 'pro_plus')
     ELSE false
   END,
