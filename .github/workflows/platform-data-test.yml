@@ -56,6 +56,17 @@ jobs:
       - name: Generate Database
         run: npm run generate
 
+      - name: Upload generated Drizzle artifacts for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drizzle-generated-artifacts
+          path: |
+            migrations/*.sql
+            migrations/meta/*.json
+          if-no-files-found: error
+          retention-days: 3
+
       - name: Verify generated schema and migrations are committed
         shell: bash
         run: |
