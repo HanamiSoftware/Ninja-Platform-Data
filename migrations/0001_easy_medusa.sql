@@ -63,7 +63,9 @@ DROP INDEX "idx_auth_sessions_active";--> statement-breakpoint
 DROP INDEX "idx_auth_sessions_user_id";--> statement-breakpoint
 DROP INDEX "idx_subscriptions_user_product";--> statement-breakpoint
 DROP INDEX "uq_active_subscription_per_product";--> statement-breakpoint
-ALTER TABLE "links" ADD COLUMN "domain_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "links" ADD COLUMN "domain_id" uuid;--> statement-breakpoint
+UPDATE "links" SET "domain_id" = (SELECT "id" FROM "domains" WHERE "is_default" = true AND "hostname" = 'n2l.ink') WHERE "domain_id" IS NULL;--> statement-breakpoint
+ALTER TABLE "links" ALTER COLUMN "domain_id" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "domains" ADD CONSTRAINT "domains_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "link_sync_jobs" ADD CONSTRAINT "link_sync_jobs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_domains_user_status" ON "domains" USING btree ("user_id","status");--> statement-breakpoint
