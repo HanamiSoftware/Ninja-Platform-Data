@@ -19,9 +19,6 @@ jobs:
     name: Install, typecheck, generate and test Source
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: src 
 
     steps:
       - name: Checkout repository
@@ -36,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Typecheck Source Data
-        run: npx tsc --noEmit -p tsconfig.json 
+        run: npx tsc --noEmit -p ${{ github.workspace }}/tsconfig.json 
 
       - name: Generate Database
         run: npx drizzle-kit generate 
@@ -44,4 +41,4 @@ jobs:
       - name: Test Connection to Database
         env:
           CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
-        run: npx tsx test-db.ts 
+        run: npx tsx ${{ github.workspace }}/test-db.ts 
