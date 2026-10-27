@@ -14,7 +14,6 @@ import {
   integer,
   boolean,
   jsonb,
-  primaryKey,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -461,6 +460,7 @@ export const capabilities = pgTable(
 export const planCapabilities = pgTable(
   "plan_capabilities",
   {
+    id: uuid().defaultRandom().primaryKey().notNull(),
     productId: uuid("product_id").notNull(),
     planId: uuid("plan_id").notNull(),
     capabilityId: uuid("capability_id").notNull(),
@@ -479,10 +479,10 @@ export const planCapabilities = pgTable(
     }).defaultNow().notNull(),
   },
   (table) => [
-    primaryKey({
-      columns: [table.planId, table.capabilityId],
-      name: "pk_plan_capabilities",
-    }),
+    unique("uq_plan_capabilities_plan_capability").on(
+      table.planId,
+      table.capabilityId,
+    ),
     index("idx_plan_capabilities_product").on(table.productId),
     foreignKey({
       columns: [table.productId, table.planId],
