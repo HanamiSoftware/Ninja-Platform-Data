@@ -13,6 +13,8 @@ import {
   check,
   integer,
   boolean,
+  jsonb,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -415,6 +417,129 @@ export const linkSyncJobs = pgTable(
     check(
       "chk_link_sync_jobs_processed",
       sql`processed_links <= total_links`,
+    ),
+  ],
+);
+
+/**
+ * Catalogo delle capabilities per prodotto.
+ * La presenza nel catalogo non implica che una feature sia implementata o abilitata.
+ */
+export const capabilities = pgTable(
+  "capabilities",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id").notNull(),
+    code: varchar({ length: 100 }).notNull(),
+    scope: varchar({ length: 30 }).notNull(),
+    description: text().notNull(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow().notNull(),
+  },
+  (table) => [
+    unique("uq_capabilities_product_code").on(table.productId, table.code),
+    unique("uq_capabilities_product_id_pair").on(table.productId, table.id),
+    index("idx_capabilities_product_scope").on(table.productId, table.scope),
+    foreignKey({
+      columns: [table.productId],
+      foreignColumns: [products.id],
+      name: "capabilities_product_id_fkey",
+    }).onDelete("restrict"),
+    check(
+      "chk_capabilities_scope",
+      sql`scope IN ('account', 'link_entitlement')`,
+    ),
+  ],
+);
+
+/**
+ * Valori predefiniti delle account capabilities per piano.
+ * Le righe devono essere presenti anche quando enabled = false.
+ */
+export const planCapabilities = pgTable(
+  "plan_capabilities",
+  {
+    productId: uuid("product_id").notNull(),
+    planId: uuid("plan_id").notNull(),
+    capabilityId: uuid("capability_id").notNull(),
+    enabled: boolean().default(false).notNull(),
+    limits: jsonb("limits")
+      .$type<Record<string, unknown>>()
+      .default(sql`'{}'::jsonb`)
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.planId, table.capabilityId],
+      name: "pk_plan_capabilities",
+    }),
+    index("idx_plan_capabilities_product").on(table.productId),
+    foreignKey({
+      columns: [table.productId, table.planId],
+      foreignColumns: [plans.productId, plans.id],
+      name: "plan_capabilities_plan_product_fkey",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.productId, table.capabilityId],
+      foreignColumns: [capabilities.productId, capabilities.id],
+      name: "plan_capabilities_capability_product_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+/**
+ * Entitlement concessi su uno specifico NinjaLink.
+ * La validità temporale è valutata dal resolver a runtime.
+ */
+export const linkEntitlements = pgTable(
+  "link_entitlements",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    linkId: varchar("link_id", { length: 64 }).notNull(),
+    capabilityId: uuid("capability_id").notNull(),
+    sourceType: varchar("source_type", { length: 30 }).notNull(),
+    sourceRef: varchar("source_ref", { length: 255 }),
+    grantedAt: timestamp("granted_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", {
+      withTimezone: true,
+      mode: "string",
+    }),
+    revokedAt: timestamp("revoked_at", {
+      withTimezone: true,
+      mode: "string",
+    }),
+  },
+  (table) => [
+    index("idx_link_entitlements_link").on(table.linkId),
+    uniqueIndex("uq_active_link_entitlement")
+      .on(table.linkId, table.capabilityId)
+      .where(sql`revoked_at IS NULL`),
+    foreignKey({
+      columns: [table.linkId],
+      foreignColumns: [links.id],
+      name: "link_entitlements_link_id_fkey",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.capabilityId],
+      foreignColumns: [capabilities.id],
+      name: "link_entitlements_capability_id_fkey",
+    }).onDelete("restrict"),
+    check(
+      "chk_link_entitlements_source_type",
+      sql`source_type IN ('shuriken', 'admin_grant')`,
     ),
   ],
 );
