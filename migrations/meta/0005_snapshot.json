@@ -1235,7 +1235,7 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": "false"
+          "default": false
         },
         "limits": {
           "name": "limits",
