@@ -16,12 +16,12 @@ concurrency:
 
 jobs:
   test-data:
-    name: Install, typecheck and test Source
+    name: Install, typecheck, generate and test Source
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
       run:
-        working-directory: src
+        working-directory: src 
 
     steps:
       - name: Checkout repository
@@ -31,16 +31,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'npm' 
+          cache-dependency-path: src/package-lock.json
 
-      - name: Install workspace dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Typecheck Source Data
-        run: npx tsc --noEmit -p src/tsconfig.json
-        
+        run: npx tsc --noEmit -p tsconfig.json 
+
+      - name: Generate Database
+        run: npx drizzle-kit generate 
+
       - name: Test Connection to Database
         env:
-          # The current create-worker tests do not connect to Postgres; this valid local URL
-          # only lets Miniflare initialize the Hyperdrive binding.
-          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: ${{secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE}}
-        run: npm run src/test-db.ts
+          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
+        run: npx tsx test-db.ts 
