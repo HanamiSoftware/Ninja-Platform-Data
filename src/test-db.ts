@@ -1,36 +1,36 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import postgres from "postgres";
 
-async function main() {
-    const sql = postgres(process.env.DATABASE_URL!, {
-        ssl: "require",
-    });
+async function main(): Promise<void> {
+  const databaseUrl = process.env.DATABASE_URL;
 
-    console.log("🚀 Connecting to Neon...");
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is required for the database connectivity check.");
+  }
+
+  const sql = postgres(databaseUrl, {
+    ssl: "require",
+    connect_timeout: 10,
+    max: 1,
+  });
+
+  try {
+    console.log("Connecting to the configured PostgreSQL database...");
 
     const version = await sql`SELECT version();`;
-    console.log(version[0]);
+    console.log("PostgreSQL version:", version[0]?.version ?? "unknown");
 
-    const databases = await sql`
-        SELECT current_database() AS database;
-    `;
+    const database = await sql`SELECT current_database() AS database;`;
+    console.log("Connected database:", database[0]?.database ?? "unknown");
 
-    console.log(databases[0]);
-
-    const tables = await sql`
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-        ORDER BY table_name;
-    `;
-
-    console.log("\nTables:");
-
-    console.table(tables);
-
-    await sql.end();
-
-    console.log("\n✅ Everything works!");
+    console.log("Database connectivity check passed.");
+  } finally {
+    await sql.end({ timeout: 5 });
+  }
 }
 
-main().catch(console.error);
+main().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : "Unknown database connection error";
+  console.error("Database connectivity check failed:", message);
+  process.exitCode = 1;
+});

@@ -68,8 +68,8 @@ export const subscriptionsRelations = relations(
         subscriptions.planId,
       ],
       references: [
-        plans.id,
         plans.productId,
+        plans.id,
       ],
     }),
   }),
