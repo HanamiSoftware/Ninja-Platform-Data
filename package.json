@@ -24,7 +24,8 @@
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate:test": "node scripts/migrate-test-db.mjs"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
