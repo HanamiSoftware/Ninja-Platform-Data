@@ -8,6 +8,7 @@ export declare const usersRelations: import("drizzle-orm").Relations<"users", {
     apiKeys: import("drizzle-orm").Many<"api_keys">;
     domains: import("drizzle-orm").Many<"domains">;
     linkSyncJobs: import("drizzle-orm").Many<"link_sync_jobs">;
+    userRoles: import("drizzle-orm").Many<"user_roles">;
 }>;
 export declare const plansRelations: import("drizzle-orm").Relations<"plans", {
     product: import("drizzle-orm").One<"products", true>;
@@ -17,6 +18,10 @@ export declare const productsRelations: import("drizzle-orm").Relations<"product
     plans: import("drizzle-orm").Many<"plans">;
     subscriptions: import("drizzle-orm").Many<"subscriptions">;
     apiKeys: import("drizzle-orm").Many<"api_keys">;
+    roles: import("drizzle-orm").Many<"roles">;
+    authCapabilities: import("drizzle-orm").Many<"auth_capabilities">;
+    roleCapabilities: import("drizzle-orm").Many<"role_capabilities">;
+    userRoles: import("drizzle-orm").Many<"user_roles">;
 }>;
 export declare const subscriptionsRelations: import("drizzle-orm").Relations<"subscriptions", {
     user: import("drizzle-orm").One<"users", true>;
@@ -50,4 +55,23 @@ export declare const planCapabilitiesRelations: import("drizzle-orm").Relations<
 export declare const linkEntitlementsRelations: import("drizzle-orm").Relations<"link_entitlements", {
     link: import("drizzle-orm").One<"links", true>;
     capability: import("drizzle-orm").One<"capabilities", true>;
+}>;
+export declare const rolesRelations: import("drizzle-orm").Relations<"roles", {
+    product: import("drizzle-orm").One<"products", true>;
+    roleCapabilities: import("drizzle-orm").Many<"role_capabilities">;
+    userRoles: import("drizzle-orm").Many<"user_roles">;
+}>;
+export declare const authCapabilitiesRelations: import("drizzle-orm").Relations<"auth_capabilities", {
+    product: import("drizzle-orm").One<"products", true>;
+    roleCapabilities: import("drizzle-orm").Many<"role_capabilities">;
+}>;
+export declare const roleCapabilitiesRelations: import("drizzle-orm").Relations<"role_capabilities", {
+    product: import("drizzle-orm").One<"products", true>;
+    role: import("drizzle-orm").One<"roles", true>;
+    capability: import("drizzle-orm").One<"auth_capabilities", true>;
+}>;
+export declare const userRolesRelations: import("drizzle-orm").Relations<"user_roles", {
+    user: import("drizzle-orm").One<"users", true>;
+    product: import("drizzle-orm").One<"products", true>;
+    role: import("drizzle-orm").One<"roles", true>;
 }>;

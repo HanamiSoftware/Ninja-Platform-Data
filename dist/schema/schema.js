@@ -403,3 +403,119 @@ export const linkEntitlements = pgTable("link_entitlements", {
     }).onDelete("restrict"),
     check("chk_link_entitlements_source_type", sql `source_type IN ('shuriken', 'admin_grant')`),
 ]);
+/**
+ * Application-specific authorization roles.
+ * Roles are scoped to a product so privileges never bleed across Ninja apps.
+ */
+export const roles = pgTable("roles", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id").notNull(),
+    code: varchar({ length: 50 }).notNull(),
+    name: varchar({ length: 100 }).notNull(),
+    description: text(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+}, (table) => [
+    unique("uq_roles_product_code").on(table.productId, table.code),
+    unique("uq_roles_product_id_pair").on(table.productId, table.id),
+    index("idx_roles_product").on(table.productId),
+    foreignKey({
+        columns: [table.productId],
+        foreignColumns: [products.id],
+        name: "roles_product_id_fkey",
+    }).onDelete("restrict"),
+]);
+/**
+ * Application authorization capabilities. Kept separate from commercial
+ * plan capabilities and per-link entitlements.
+ */
+export const authCapabilities = pgTable("auth_capabilities", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id").notNull(),
+    code: varchar({ length: 100 }).notNull(),
+    scope: varchar({ length: 20 }).notNull(),
+    description: text().notNull(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+}, (table) => [
+    unique("uq_auth_capabilities_product_code").on(table.productId, table.code),
+    unique("uq_auth_capabilities_product_id_pair").on(table.productId, table.id),
+    index("idx_auth_capabilities_product_scope").on(table.productId, table.scope),
+    foreignKey({
+        columns: [table.productId],
+        foreignColumns: [products.id],
+        name: "auth_capabilities_product_id_fkey",
+    }).onDelete("restrict"),
+    check("chk_auth_capabilities_scope", sql `scope IN ('user', 'admin')`),
+]);
+/**
+ * Assigns capabilities to roles within the same product.
+ */
+export const roleCapabilities = pgTable("role_capabilities", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id").notNull(),
+    roleId: uuid("role_id").notNull(),
+    capabilityId: uuid("capability_id").notNull(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+}, (table) => [
+    unique("uq_role_capabilities_role_capability").on(table.roleId, table.capabilityId),
+    index("idx_role_capabilities_product_role").on(table.productId, table.roleId),
+    foreignKey({
+        columns: [table.productId, table.roleId],
+        foreignColumns: [roles.productId, roles.id],
+        name: "role_capabilities_role_product_fkey",
+    }).onDelete("cascade"),
+    foreignKey({
+        columns: [table.productId, table.capabilityId],
+        foreignColumns: [authCapabilities.productId, authCapabilities.id],
+        name: "role_capabilities_capability_product_fkey",
+    }).onDelete("cascade"),
+    foreignKey({
+        columns: [table.productId],
+        foreignColumns: [products.id],
+        name: "role_capabilities_product_id_fkey",
+    }).onDelete("restrict"),
+]);
+/**
+ * Assigns one primary application role to each user/product pair.
+ * The same user may have different roles in different Ninja applications.
+ */
+export const userRoles = pgTable("user_roles", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    userId: uuid("user_id").notNull(),
+    productId: uuid("product_id").notNull(),
+    roleId: uuid("role_id").notNull(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+}, (table) => [
+    unique("uq_user_roles_user_product").on(table.userId, table.productId),
+    index("idx_user_roles_product_role").on(table.productId, table.roleId),
+    foreignKey({
+        columns: [table.userId],
+        foreignColumns: [users.id],
+        name: "user_roles_user_id_fkey",
+    }).onDelete("cascade"),
+    foreignKey({
+        columns: [table.productId],
+        foreignColumns: [products.id],
+        name: "user_roles_product_id_fkey",
+    }).onDelete("restrict"),
+    foreignKey({
+        columns: [table.productId, table.roleId],
+        foreignColumns: [roles.productId, roles.id],
+        name: "user_roles_role_product_fkey",
+    }).onDelete("restrict"),
+]);
