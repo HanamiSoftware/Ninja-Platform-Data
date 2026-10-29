@@ -126,10 +126,8 @@ JOIN (
   SELECT subscription."user_id", subscription."product_id"
   FROM "subscriptions" AS subscription
   UNION
-  SELECT link."user_id", domain."id" AS product_id
+  SELECT link."user_id", (SELECT "id" FROM "products" WHERE "code" = 'ninjaurl') AS product_id
   FROM "links" AS link
-  JOIN "domains" AS domain ON domain."id" = link."domain_id"
-  WHERE domain."is_default" = true
 ) AS source ON source."product_id" = product."id"
 WHERE product."code" = 'ninjaurl'
 ON CONFLICT ("user_id", "product_id") DO NOTHING;
