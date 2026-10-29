@@ -89,6 +89,7 @@ FROM "products" AS product
 CROSS JOIN (
   VALUES
     ('link.create', 'user', 'Create links'),
+    ('user.keys.create', 'user', 'Create registered API keys for the authenticated user'),
     ('link.read.own', 'user', 'Read links owned by the authenticated user'),
     ('link.delete.own', 'user', 'Delete links owned by the authenticated user'),
     ('admin.users.read', 'admin', 'Read user records for administration'),
