@@ -43,6 +43,13 @@
       "when": 1793109600000,
       "tag": "0005_fix_subscription_plan_foreign_key",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793263317182,
+      "tag": "0006_add_application_rbac",
+      "breakpoints": true
     }
   ]
 }
