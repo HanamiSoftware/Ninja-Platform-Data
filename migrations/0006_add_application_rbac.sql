@@ -143,12 +143,13 @@ WHERE role."code" = 'user'
   AND role."product_id" = (SELECT "id" FROM "products" WHERE "code" = 'ninjaurl')
 ON CONFLICT ("role_id", "capability_id") DO NOTHING;
 --> statement-breakpoint
--- Grant admin capabilities only to the NinjaURL admin role.
+-- The admin role includes normal user capabilities plus admin-only capabilities,
+-- so an administrator can continue using standard NinjaURL features.
 INSERT INTO "role_capabilities" ("product_id", "role_id", "capability_id")
 SELECT role."product_id", role."id", capability."id"
 FROM "roles" AS role
 JOIN "auth_capabilities" AS capability ON capability."product_id" = role."product_id"
 WHERE role."code" = 'admin'
-  AND capability."scope" = 'admin'
+  AND capability."scope" IN ('user', 'admin')
   AND role."product_id" = (SELECT "id" FROM "products" WHERE "code" = 'ninjaurl')
 ON CONFLICT ("role_id", "capability_id") DO NOTHING;
