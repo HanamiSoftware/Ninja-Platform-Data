@@ -315,6 +315,7 @@ export const capabilities = pgTable("capabilities", {
     code: varchar({ length: 100 }).notNull(),
     scope: varchar({ length: 30 }).notNull(),
     description: text().notNull(),
+    released: boolean().default(false).notNull(),
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
