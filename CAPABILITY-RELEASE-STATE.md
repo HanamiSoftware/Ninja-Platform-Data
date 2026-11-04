@@ -1,6 +1,6 @@
 # Capability release state — NinjaURL
 
-**Updated:** 2026-10-30  
+**Updated:** 2026-11-04  
 **Product code:** `ninjaurl`
 
 ## Meaning of `capabilities.released`
@@ -38,13 +38,21 @@ The boolean `capabilities.released` is the product-publication switch. It is sep
 5. No production migration, database write, release toggle, merge, or deployment should occur without explicit authorization.
 
 
-## Integration status — 2026-10-30
+## Integration status — 2026-11-04
 
 - PR #14 is merged into `main` at `251152c24db20fadacf7296793968be23c45beeb`.
-- Platform Data CI run [#30](https://github.com/HanamiSoftware/Ninja-Platform-Data/actions/runs/40944535614) passed: source typecheck, Drizzle generation, and generated-migration artifact verification all succeeded. The database-connectivity job was skipped by its trusted-main condition; this run does not prove that migrations were applied to any database.
-- Migration files `0009_add_capability_release_state.sql` and `0010_add_capability_release_admin_permission.sql`, their snapshots, and the journal entry are present on `main`.
-- The current `main` schema contains `capabilities.released`. However, the `v0.1.5` tag's `src/schema/schema.ts` does not contain that property.
-- All five NinjaURL Workers (`auth-worker`, `create-worker`, `event-worker`, `redirect-worker`, and `admin-worker`) currently reference the `v0.1.5` release tarball in their package manifests. This creates a real source/package schema mismatch even though the new capability handlers currently query the release state using raw SQL.
-- Before relying on the shared Drizzle schema for the new field, prepare a new package release (proposed next version: `0.1.6`), build and verify its generated declarations, publish the release artifact, then update all five Worker manifests and the workspace lockfile and rerun Workers CI. Do not republish the existing `0.1.5` tag.
-- No database migration was applied or verified in this session. Migration history, initial release flags, and the admin role grant must be checked in the intended test database before staging validation.
-- No package release, database write, merge, or deployment was performed by this session.
+- The current `main` source and the `v0.1.6` tag both declare `@hanami/platform-data` version `0.1.6`.
+- The `v0.1.6` tagged schema contains `capabilities.released` as a non-null boolean with default `false`.
+- All five NinjaURL Workers (`auth-worker`, `create-worker`, `event-worker`, `redirect-worker`, and `admin-worker`) and `Workers/package-lock.json` reference the GitHub release tarball URL for `v0.1.6`. The previous source/package mismatch documented for `v0.1.5` is resolved in the repository references.
+- The release asset itself was not downloaded or independently verified in this audit. No CI result tied specifically to the `v0.1.6` tag was verified.
+- Migration files `0009_add_capability_release_state.sql` and `0010_add_capability_release_admin_permission.sql`, their snapshots, and the journal entries are present on `main`.
+- Platform Data CI run [#30](https://github.com/HanamiSoftware/Ninja-Platform-Data/actions/runs/40944535614) passed source typecheck, Drizzle generation, and generated-migration artifact verification for the earlier merged PR. Its database-connectivity job was skipped; it does not prove that migrations were applied to any database.
+- Migration history, initial release flags, and the `admin.capabilities.release` grant in the intended test database remain unverified.
+- No database migration, release toggle, merge, or deployment was performed by this audit.
+
+## Next verification steps
+
+1. Verify that the `v0.1.6` release asset URL is downloadable and that its generated declarations include the `released` field.
+2. Run or inspect Workers CI for a commit that consumes the `v0.1.6` tarball across all five Workers.
+3. Check the migration journal and seed values in the intended test database; do not apply migrations or toggle release state without explicit authorization.
+4. Validate account capabilities, public roadmap, and admin release endpoints end-to-end against that database and the deployed Worker configuration.
