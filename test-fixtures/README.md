@@ -44,3 +44,17 @@ For a URL without existing query parameters, the option can be supplied as:
 ```
 
 If the option is absent, the migration fails closed before inserting any fixture data.
+
+
+## Stato e utilizzo per la demo del 10 novembre 2026
+
+Le fixture sono una possibile facilitazione per predisporre account FREE/PRO/PRO+ in un ambiente di test, ma **non sono un prerequisito per la demo** e non sono state validate su PostgreSQL nella documentazione di continuità dell'8 novembre.
+
+Prima di qualsiasi applicazione:
+
+1. Confrontare il SQL con schema effettivo, colonne, constraint, enum e journal Drizzle.
+2. Eseguire la migrazione esclusivamente su un database disposable dedicato a test.
+3. Verificare gli inserimenti con query di controllo e controllare che le foreign key usino `users.id`.
+4. Per il login OAuth end-to-end, associare manualmente identità AuthGear di test ai record fixture soltanto dopo aver verificato formato di `auth_provider` e `auth_subject` e le collisioni. Non inserire subject reali in repository o documenti versionati.
+
+La migrazione non crea credenziali né sessioni e non rende gli account sintetici autenticabili. Non puntare mai la fixture migration a database condivisi o di produzione. Nessuna migrazione è stata eseguita come parte della preparazione del piano demo.
