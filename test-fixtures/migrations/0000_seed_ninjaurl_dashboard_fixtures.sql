@@ -137,7 +137,7 @@ ON CONFLICT DO NOTHING;
 --> statement-breakpoint
 INSERT INTO user_roles (user_id, product_id, role_id)
 SELECT
-  fixture.user_id,
+  fixture.id,
   product.id,
   role.id
 FROM users AS fixture
