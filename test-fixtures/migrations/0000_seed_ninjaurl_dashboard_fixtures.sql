@@ -84,8 +84,34 @@ BEGIN
     WHERE existing.user_id <> fixture.user_id::uuid
        OR existing.product_id <> product.id
        OR existing.plan_id <> plan.id
+       OR existing.status NOT IN ('trialing', 'active', 'past_due')
   ) THEN
     RAISE EXCEPTION 'A NinjaURL fixture subscription ID conflicts with existing subscription data.';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM subscriptions AS existing
+    JOIN (
+      VALUES
+        ('a1111111-1111-4111-8111-111111111101', 'c1111111-1111-4111-8111-111111111101', 'free'),
+        ('a1111111-1111-4111-8111-111111111102', 'c1111111-1111-4111-8111-111111111102', 'pro'),
+        ('a1111111-1111-4111-8111-111111111103', 'c1111111-1111-4111-8111-111111111103', 'pro_plus')
+    ) AS fixture(user_id, subscription_id, plan_code)
+      ON existing.user_id = fixture.user_id::uuid
+    JOIN products AS product
+      ON product.code = 'ninjaurl'
+    JOIN plans AS plan
+      ON plan.product_id = product.id
+     AND plan.code = fixture.plan_code
+    WHERE existing.product_id = product.id
+      AND existing.status IN ('trialing', 'active', 'past_due')
+      AND (
+        existing.id <> fixture.subscription_id::uuid
+        OR existing.plan_id <> plan.id
+      )
+  ) THEN
+    RAISE EXCEPTION 'A NinjaURL fixture account already has a different active subscription; refusing to overwrite it.';
   END IF;
 
   IF EXISTS (
