@@ -68,7 +68,31 @@ BEGIN
 
   IF EXISTS (
     SELECT 1
+    FROM subscriptions AS existing
+    JOIN (
+      VALUES
+        ('c1111111-1111-4111-8111-111111111101', 'a1111111-1111-4111-8111-111111111101', 'free'),
+        ('c1111111-1111-4111-8111-111111111102', 'a1111111-1111-4111-8111-111111111102', 'pro'),
+        ('c1111111-1111-4111-8111-111111111103', 'a1111111-1111-4111-8111-111111111103', 'pro_plus')
+    ) AS fixture(subscription_id, user_id, plan_code)
+      ON existing.id = fixture.subscription_id::uuid
+    JOIN products AS product
+      ON product.code = 'ninjaurl'
+    JOIN plans AS plan
+      ON plan.product_id = product.id
+     AND plan.code = fixture.plan_code
+    WHERE existing.user_id <> fixture.user_id::uuid
+       OR existing.product_id <> product.id
+       OR existing.plan_id <> plan.id
+  ) THEN
+    RAISE EXCEPTION 'A NinjaURL fixture subscription ID conflicts with existing subscription data.';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
     FROM links AS existing
+    JOIN domains AS existing_domain
+      ON existing_domain.id = existing.domain_id
     JOIN (
       VALUES
         ('b1111111-1111-4111-8111-111111111101', 'a1111111-1111-4111-8111-111111111101', 'test-free', 'https://example.com/ninjaurl-fixture/free'),
@@ -79,6 +103,8 @@ BEGIN
     WHERE existing.user_id <> fixture.user_id::uuid
        OR existing.slug <> fixture.slug
        OR existing.target <> fixture.target
+       OR existing_domain.hostname <> 'n2l.ink'
+       OR existing_domain.is_default IS DISTINCT FROM true
   ) THEN
     RAISE EXCEPTION 'A NinjaURL fixture link ID conflicts with existing link data.';
   END IF;
