@@ -23,6 +23,7 @@
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "migrate:test-fixtures": "drizzle-kit migrate --config=drizzle.test.config.ts",
+    "assign:test-account-plans": "tsx scripts/assign-test-account-plans.ts",
     "studio": "drizzle-kit studio",
     "lint": "eslint .",
     "format": "prettier --write ."
