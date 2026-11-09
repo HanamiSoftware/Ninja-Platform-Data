@@ -520,3 +520,26 @@ export const userRoles = pgTable("user_roles", {
         name: "user_roles_role_product_fkey",
     }).onDelete("restrict"),
 ]);
+
+/**
+ * Internal first-party OAuth clients registered with Ninja Connect.
+ * Each row is one exact, approved redirect URI for a client.
+ */
+export const oauthClientsInternal = pgTable("oauth_clients_internal", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    clientId: varchar("client_id", { length: 255 }).notNull(),
+    redirectUri: text("redirect_uri").notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", {
+        withTimezone: true,
+        mode: "string",
+    }).defaultNow().notNull(),
+}, (table) => [
+    unique("uq_oauth_clients_internal_client_id").on(table.clientId),
+    check("chk_oauth_clients_internal_client_id_nonempty", sql `length(btrim(client_id)) > 0`),
+    check("chk_oauth_clients_internal_redirect_uri_nonempty", sql `length(btrim(redirect_uri)) > 0`),
+]);
