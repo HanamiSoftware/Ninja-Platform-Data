@@ -9,8 +9,8 @@ CREATE TABLE "oauth_clients_internal" (
   "is_active" boolean DEFAULT true NOT NULL,
   "created_at" timestamp with time zone DEFAULT now() NOT NULL,
   "updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-  CONSTRAINT "uq_oauth_clients_internal_client_redirect"
-    UNIQUE ("client_id", "redirect_uri"),
+  CONSTRAINT "uq_oauth_clients_internal_client_id"
+    UNIQUE ("client_id"),
   CONSTRAINT "chk_oauth_clients_internal_client_id_nonempty"
     CHECK (length(btrim("client_id")) > 0),
   CONSTRAINT "chk_oauth_clients_internal_redirect_uri_nonempty"
