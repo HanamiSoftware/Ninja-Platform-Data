@@ -711,10 +711,7 @@ export const oauthClientsInternal = pgTable(
     }).defaultNow().notNull(),
   },
   (table) => [
-    unique("uq_oauth_clients_internal_client_redirect").on(
-      table.clientId,
-      table.redirectUri,
-    ),
+    unique("uq_oauth_clients_internal_client_id").on(table.clientId),
     index("idx_oauth_clients_internal_client_id").on(table.clientId),
     check(
       "chk_oauth_clients_internal_client_id_nonempty",
