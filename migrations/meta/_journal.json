@@ -78,6 +78,13 @@
       "when": 1793291000000,
       "tag": "0010_add_capability_release_admin_permission",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794225600000,
+      "tag": "0011_add_internal_oauth_clients",
+      "breakpoints": true
     }
   ]
 }
