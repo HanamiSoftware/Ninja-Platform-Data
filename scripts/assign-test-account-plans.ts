@@ -67,7 +67,7 @@ async function main(): Promise<void> {
         WHERE product_id = ${productId}::uuid
           AND code IN ('free', 'pro', 'pro_plus')
       `;
-      const planIds = new Map(planRows.map((row) => [String(row.code), String(row.id)]));
+      const planIds = new Map<string, string>(planRows.map((row) => [String(row.code), String(row.id)] as const));
       for (const code of ["free", "pro", "pro_plus"] as const) {
         if (!planIds.has(code)) throw new Error(`NinjaURL plan '${code}' was not found.`);
       }
