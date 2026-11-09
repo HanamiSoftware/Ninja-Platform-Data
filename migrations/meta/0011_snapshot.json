@@ -1959,23 +1959,7 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "idx_oauth_clients_internal_client_id": {
-          "name": "idx_oauth_clients_internal_client_id",
-          "columns": [
-            {
-              "expression": "client_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
