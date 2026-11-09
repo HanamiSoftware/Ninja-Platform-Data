@@ -10,6 +10,7 @@ on:
       - "package-lock.json"
       - "tsconfig.json"
       - ".github/workflows/platform-data-test.yml"
+      - "scripts/**"
   push:
     branches:
       - main
@@ -21,14 +22,41 @@ on:
       - "package-lock.json"
       - "tsconfig.json"
       - ".github/workflows/platform-data-test.yml"
+      - "scripts/**"
   workflow_dispatch:
+    inputs:
+      apply_test_account_plans:
+        description: "Apply the FREE / PRO / PRO+ subscriptions to the supplied test users"
+        required: true
+        type: boolean
+        default: false
+      confirm_test_database:
+        description: "Explicitly confirm that the Hyperdrive secret points to the test database"
+        required: true
+        type: choice
+        options:
+          - NO
+          - YES_I_CONFIRM_TEST_DATABASE
+        default: NO
+      free_user_id:
+        description: "Existing users.id for the FREE test account (UUID)"
+        required: false
+        type: string
+      pro_user_id:
+        description: "Existing users.id for the PRO test account (UUID)"
+        required: false
+        type: string
+      pro_plus_user_id:
+        description: "Existing users.id for the PRO+ test account (UUID)"
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
   group: platform-data-ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate:
@@ -78,8 +106,8 @@ jobs:
           fi
 
   database-connection:
-    name: Test database connectivity (trusted main only)
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    name: Test DB connectivity and optionally assign test plans
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.apply_test_account_plans == true && inputs.confirm_test_database == 'YES_I_CONFIRM_TEST_DATABASE')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -100,3 +128,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
         run: npx tsx src/test-db.ts
+
+      - name: Assign plans to the three existing test accounts
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
+          CONFIRM_TEST_DATABASE: ${{ inputs.confirm_test_database }}
+          FREE_USER_ID: ${{ inputs.free_user_id }}
+          PRO_USER_ID: ${{ inputs.pro_user_id }}
+          PRO_PLUS_USER_ID: ${{ inputs.pro_plus_user_id }}
+        run: npm run assign:test-account-plans
