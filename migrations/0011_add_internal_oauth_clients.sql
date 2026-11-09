@@ -16,6 +16,3 @@ CREATE TABLE "oauth_clients_internal" (
   CONSTRAINT "chk_oauth_clients_internal_redirect_uri_nonempty"
     CHECK (length(btrim("redirect_uri")) > 0)
 );
---> statement-breakpoint
-CREATE INDEX "idx_oauth_clients_internal_client_id"
-  ON "oauth_clients_internal" USING btree ("client_id");
