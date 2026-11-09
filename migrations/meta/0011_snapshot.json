@@ -1979,12 +1979,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "uq_oauth_clients_internal_client_redirect": {
-          "name": "uq_oauth_clients_internal_client_redirect",
+        "uq_oauth_clients_internal_client_id": {
+          "name": "uq_oauth_clients_internal_client_id",
           "nullsNotDistinct": false,
           "columns": [
-            "client_id",
-            "redirect_uri"
+            "client_id"
           ]
         }
       },
