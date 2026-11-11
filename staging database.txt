@@ -1,0 +1,2 @@
+staging database connection string
+postgresql://francesco:npg_DN6jkdOxv4cr@ep-square-cell-agodstdf-pooler.c-2.eu-central-1.aws.neon.tech/ninja-platform-data?sslmode=require&channel_binding=require

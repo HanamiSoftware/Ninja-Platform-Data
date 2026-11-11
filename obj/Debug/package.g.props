@@ -12,6 +12,7 @@
     <PackageJsonExportsImport Condition="$(PackageJsonExportsImport) == ''">./dist/index.js</PackageJsonExportsImport>
     <PackageJsonFiles Condition="$(PackageJsonFiles) == ''">[
   "dist",
+  "migrations",
   "README.md"
 ]</PackageJsonFiles>
     <PackageJsonScriptsBuild Condition="$(PackageJsonScriptsBuild) == ''">tsc -p tsconfig.json</PackageJsonScriptsBuild>
@@ -28,13 +29,13 @@
     <PackageJsonDependenciesDrizzleOrm Condition="$(PackageJsonDependenciesDrizzleOrm) == ''">^0.45.4</PackageJsonDependenciesDrizzleOrm>
     <PackageJsonDependenciesPostgres Condition="$(PackageJsonDependenciesPostgres) == ''">^3.4.9</PackageJsonDependenciesPostgres>
     <PackageJsonDependenciesPostgresql Condition="$(PackageJsonDependenciesPostgresql) == ''">^0.0.1</PackageJsonDependenciesPostgresql>
-    <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^10.0.1</PackageJsonDevdependenciesEslintJs>
+    <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.39.5</PackageJsonDevdependenciesEslintJs>
     <PackageJsonDevdependenciesTypesNode Condition="$(PackageJsonDevdependenciesTypesNode) == ''">^26.1.2</PackageJsonDevdependenciesTypesNode>
-    <PackageJsonDevdependenciesDrizzleKit Condition="$(PackageJsonDevdependenciesDrizzleKit) == ''">^0.31.11</PackageJsonDevdependenciesDrizzleKit>
-    <PackageJsonDevdependenciesEslint Condition="$(PackageJsonDevdependenciesEslint) == ''">^10.8.0</PackageJsonDevdependenciesEslint>
+    <PackageJsonDevdependenciesDrizzleKit Condition="$(PackageJsonDevdependenciesDrizzleKit) == ''">^0.18.1</PackageJsonDevdependenciesDrizzleKit>
+    <PackageJsonDevdependenciesEslint Condition="$(PackageJsonDevdependenciesEslint) == ''">^9.39.5</PackageJsonDevdependenciesEslint>
     <PackageJsonDevdependenciesPrettier Condition="$(PackageJsonDevdependenciesPrettier) == ''">^3.9.6</PackageJsonDevdependenciesPrettier>
     <PackageJsonDevdependenciesTsx Condition="$(PackageJsonDevdependenciesTsx) == ''">^4.23.9</PackageJsonDevdependenciesTsx>
     <PackageJsonDevdependenciesTypescript Condition="$(PackageJsonDevdependenciesTypescript) == ''">^5.9.0</PackageJsonDevdependenciesTypescript>
-    <PackageJsonDevdependenciesTypescriptEslint Condition="$(PackageJsonDevdependenciesTypescriptEslint) == ''">^8.66.0</PackageJsonDevdependenciesTypescriptEslint>
+    <PackageJsonDevdependenciesTypescriptEslint Condition="$(PackageJsonDevdependenciesTypescriptEslint) == ''">^8.36.0</PackageJsonDevdependenciesTypescriptEslint>
   </PropertyGroup>
 </Project>
