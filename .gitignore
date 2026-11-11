@@ -2,3 +2,5 @@
 /.env
 .vs
 *.tgz
+/staging database.txt
+/dump-ninja-platform-data-202610271218.sql
