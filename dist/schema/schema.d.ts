@@ -2346,10 +2346,12 @@ export declare const userRoles: import("drizzle-orm/pg-core").PgTableWithColumns
     };
     dialect: "pg";
 }>;
-
 /**
  * Internal first-party OAuth clients registered with Ninja Connect.
- * Each row is one exact, approved redirect URI for a client.
+ *
+ * Each row is one exact, approved redirect URI for a client. Multiple rows
+ * may share client_id to support production and local development callbacks.
+ * client_id is a public identifier, not a client secret; browser clients use PKCE.
  */
 export declare const oauthClientsInternal: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "oauth_clients_internal";
@@ -2384,11 +2386,13 @@ export declare const oauthClientsInternal: import("drizzle-orm/pg-core").PgTable
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: undefined;
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {}>;
+        }, {}, {
+            length: 255;
+        }>;
         redirectUri: import("drizzle-orm/pg-core").PgColumn<{
             name: "redirect_uri";
             tableName: "oauth_clients_internal";
@@ -2401,7 +2405,7 @@ export declare const oauthClientsInternal: import("drizzle-orm/pg-core").PgTable
             isPrimaryKey: false;
             isAutoincrement: false;
             hasRuntimeDefault: false;
-            enumValues: undefined;
+            enumValues: [string, ...string[]];
             baseColumn: never;
             identity: undefined;
             generated: undefined;

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <PackageJsonName Condition="$(PackageJsonName) == ''">@hanami/platform-data</PackageJsonName>
-    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.1.6</PackageJsonVersion>
+    <PackageJsonName Condition="$(PackageJsonName) == ''">@hanami-software/platform-data</PackageJsonName>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.1.7</PackageJsonVersion>
     <PackageJsonPrivate Condition="$(PackageJsonPrivate) == ''">true</PackageJsonPrivate>
     <PackageJsonType Condition="$(PackageJsonType) == ''">module</PackageJsonType>
     <PackageJsonDescription Condition="$(PackageJsonDescription) == ''">Shared database schema and data access for the Ninja Platform</PackageJsonDescription>
@@ -19,6 +19,8 @@
     <PackageJsonScriptsPrepare Condition="$(PackageJsonScriptsPrepare) == ''">npm run build</PackageJsonScriptsPrepare>
     <PackageJsonScriptsGenerate Condition="$(PackageJsonScriptsGenerate) == ''">drizzle-kit generate</PackageJsonScriptsGenerate>
     <PackageJsonScriptsMigrate Condition="$(PackageJsonScriptsMigrate) == ''">drizzle-kit migrate</PackageJsonScriptsMigrate>
+    <PackageJsonScriptsMigrateTestFixtures Condition="$(PackageJsonScriptsMigrateTestFixtures) == ''">drizzle-kit migrate --config=drizzle.test.config.ts</PackageJsonScriptsMigrateTestFixtures>
+    <PackageJsonScriptsAssignTestAccountPlans Condition="$(PackageJsonScriptsAssignTestAccountPlans) == ''">tsx src/scripts/assign-test-account-plans.ts</PackageJsonScriptsAssignTestAccountPlans>
     <PackageJsonScriptsStudio Condition="$(PackageJsonScriptsStudio) == ''">drizzle-kit studio</PackageJsonScriptsStudio>
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint .</PackageJsonScriptsLint>
     <PackageJsonScriptsFormat Condition="$(PackageJsonScriptsFormat) == ''">prettier --write .</PackageJsonScriptsFormat>

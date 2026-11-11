@@ -520,10 +520,12 @@ export const userRoles = pgTable("user_roles", {
         name: "user_roles_role_product_fkey",
     }).onDelete("restrict"),
 ]);
-
 /**
  * Internal first-party OAuth clients registered with Ninja Connect.
- * Each row is one exact, approved redirect URI for a client.
+ *
+ * Each row is one exact, approved redirect URI for a client. Multiple rows
+ * may share client_id to support production and local development callbacks.
+ * client_id is a public identifier, not a client secret; browser clients use PKCE.
  */
 export const oauthClientsInternal = pgTable("oauth_clients_internal", {
     id: uuid().defaultRandom().primaryKey().notNull(),

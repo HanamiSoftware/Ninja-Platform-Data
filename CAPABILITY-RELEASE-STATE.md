@@ -56,3 +56,6 @@ The boolean `capabilities.released` is the product-publication switch. It is sep
 2. Run or inspect Workers CI for a commit that consumes the `v0.1.6` tarball across all five Workers.
 3. Check the migration journal and seed values in the intended test database; do not apply migrations or toggle release state without explicit authorization.
 4. Validate account capabilities, public roadmap, and admin release endpoints end-to-end against that database and the deployed Worker configuration.
+
+## Integration status 2026-11-11
+Current package v0.1.7 including Test Users and test data for staging tests  
