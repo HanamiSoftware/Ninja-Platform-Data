@@ -15,7 +15,7 @@ It does not own application API behavior, browser UI, authentication SDK behavio
 
 | Item | Observed state |
 |---|---|
-| Package | `@hanami-software/platform-data` |
+| Package | `@hanami-software/platform-data` (`private: true` in package metadata) |
 | Version | `0.1.7` |
 | Module format | ESM |
 | Build output | `dist/index.js`, declarations in `dist/index.d.ts` |
@@ -60,7 +60,7 @@ The current `.gitignore` ignores `.env`, but does not contain a rule for the spe
 
 ## 5. Dependency and release discipline
 
-- Consuming Workers must use an explicit published package version.
+- Consuming Workers must use an explicit versioned package artifact.
 - Review the package tarball contents after build; do not infer package correctness from source files alone.
 - Review Drizzle Kit compatibility before changing its major/minor version or migration tooling.
 - Update package metadata, lockfiles and migration documentation together.
