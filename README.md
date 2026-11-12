@@ -3,7 +3,7 @@
 Shared PostgreSQL schema, relations and data-access primitives used by the Ninja ecosystem.
 
 **Package:** `@hanami-software/platform-data`  
-**Version recorded in this branch:** `0.1.7`  
+**Version recorded in this branch:** `0.1.8`  
 **Package metadata:** `private: true`  
 **Repository:** [HanamiSoftware/Ninja-Platform-Data](https://github.com/HanamiSoftware/Ninja-Platform-Data)
 
@@ -16,15 +16,6 @@ This repository owns:
 - explicitly separate test-fixture migrations and test data tooling.
 
 It does not own application-specific Worker routes, UI behavior, identity-broker behavior or deployment configuration in consuming repositories.
-
-## Package contents
-
-The current `package.json` declares these package files:
-- `dist`
-- `migrations`
-- `README.md`
-
-The README is included in the package allowlist. Keep it present and verify the generated tarball before distributing a new versioned package artifact.
 
 ## Development
 
