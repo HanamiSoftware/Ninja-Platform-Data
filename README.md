@@ -4,6 +4,7 @@ Shared PostgreSQL schema, relations and data-access primitives used by the Ninja
 
 **Package:** `@hanami-software/platform-data`  
 **Version recorded in this branch:** `0.1.7`  
+**Package metadata:** `private: true`  
 **Repository:** [HanamiSoftware/Ninja-Platform-Data](https://github.com/HanamiSoftware/Ninja-Platform-Data)
 
 ## Ownership
@@ -23,7 +24,7 @@ The current `package.json` declares these package files:
 - `migrations`
 - `README.md`
 
-The README is included in the package allowlist. Keep it present and verify the generated tarball before publishing a new package version.
+The README is included in the package allowlist. Keep it present and verify the generated tarball before distributing a new versioned package artifact.
 
 ## Development
 
@@ -75,4 +76,4 @@ The current `.gitignore` should be reviewed for the specific local test-credenti
 - [NinjaURL Dashboard](https://github.com/HanamiSoftware/Ninja-URL-Dashboard)
 - [NinjaURL Extension](https://github.com/HanamiSoftware/NinjaUrl-Extension)
 
-Consumers must pin a published package version and update lockfiles intentionally. Do not assume that a local schema change is already present in a deployed Worker or database.
+Consumers must pin the intended versioned package artifact and update lockfiles intentionally. Do not assume that a local schema change is already present in a deployed Worker or database.
