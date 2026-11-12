@@ -47,7 +47,6 @@ Useful scripts:
 | `migrate` | Apply the normal migration sequence |
 | `migrate:test-fixtures` | Apply the separate test-fixture migration sequence |
 | `lint` | Run ESLint |
-| `studio` | Open Drizzle Studio |
 
 Database configuration is read from `DATABASE_URL` via environment configuration. Never commit a connection string, password, token or populated local environment file.
 
