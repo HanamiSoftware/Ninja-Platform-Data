@@ -22,7 +22,6 @@
     <PackageJsonScriptsMigrate Condition="$(PackageJsonScriptsMigrate) == ''">drizzle-kit migrate</PackageJsonScriptsMigrate>
     <PackageJsonScriptsMigrateTestFixtures Condition="$(PackageJsonScriptsMigrateTestFixtures) == ''">drizzle-kit migrate --config=drizzle.test.config.ts</PackageJsonScriptsMigrateTestFixtures>
     <PackageJsonScriptsAssignTestAccountPlans Condition="$(PackageJsonScriptsAssignTestAccountPlans) == ''">tsx src/scripts/assign-test-account-plans.ts</PackageJsonScriptsAssignTestAccountPlans>
-    <PackageJsonScriptsStudio Condition="$(PackageJsonScriptsStudio) == ''">drizzle-kit studio</PackageJsonScriptsStudio>
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint .</PackageJsonScriptsLint>
     <PackageJsonScriptsFormat Condition="$(PackageJsonScriptsFormat) == ''">prettier --write .</PackageJsonScriptsFormat>
     <PackageJsonDependenciesDotenv Condition="$(PackageJsonDependenciesDotenv) == ''">^17.4.2</PackageJsonDependenciesDotenv>
