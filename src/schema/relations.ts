@@ -92,10 +92,18 @@ export const domainsRelations = relations(domains, ({ one, many }) => ({
   links: many(links),
 }));
 
+export const anonymousIdentitiesRelations = relations(anonymousIdentities, ({ many }) => ({
+  links: many(links),
+}));
+
 export const linksRelations = relations(links, ({ one }) => ({
   user: one(users, {
     fields: [links.userId],
     references: [users.id],
+  }),
+  anonymousIdentity: one(anonymousIdentities, {
+    fields: [links.anonymousIdentityId],
+    references: [anonymousIdentities.id],
   }),
   domain: one(domains, {
     fields: [links.domainId],
