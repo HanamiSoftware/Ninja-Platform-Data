@@ -7,6 +7,7 @@ import {
   plans,
   subscriptions,
   links,
+  anonymousIdentities,
   apiKeys,
   domains,
   linkSyncJobs,
