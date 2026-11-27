@@ -1,47 +1,47 @@
 {
-  "name": "@hanami-software/platform-data",
-  "version": "0.1.8",
-  "private": true,
-  "type": "module",
-  "description": "Shared database schema and data access for the Ninja Platform",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+    "name": "@hanami-software/platform-data",
+    "version": "0.1.9",
+    "private": true,
+    "type": "module",
+    "description": "Shared database schema and data access for the Ninja Platform",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "migrations",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "prepare": "npm run build",
+        "generate": "drizzle-kit generate",
+        "migrate": "tsx src/migrate.ts",
+        "migrate:test-fixtures": "drizzle-kit migrate --config=drizzle.test.config.ts",
+        "assign:test-account-plans": "tsx src/scripts/assign-test-account-plans.ts",
+        "lint": "eslint .",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "drizzle-orm": "^0.45.4",
+        "postgres": "^3.4.9",
+        "postgresql": "^0.0.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.5",
+        "@types/node": "^26.1.2",
+        "drizzle-kit": "^0.18.1",
+        "eslint": "^9.39.5",
+        "prettier": "^3.9.6",
+        "tsx": "^4.23.9",
+        "typescript": "^5.9.0",
+        "typescript-eslint": "^8.72.2"
     }
-  },
-  "files": [
-    "dist",
-    "migrations",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "prepare": "npm run build",
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
-    "migrate:test-fixtures": "drizzle-kit migrate --config=drizzle.test.config.ts",
-    "assign:test-account-plans": "tsx src/scripts/assign-test-account-plans.ts",
-    "lint": "eslint .",
-    "format": "prettier --write ."
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.4",
-    "postgres": "^3.4.9",
-    "postgresql": "^0.0.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@types/node": "^26.1.2",
-    "drizzle-kit": "^0.18.1",
-    "eslint": "^9.39.5",
-    "prettier": "^3.9.6",
-    "tsx": "^4.23.9",
-    "typescript": "^5.9.0",
-    "typescript-eslint": "^8.72.2"
-  }
 }

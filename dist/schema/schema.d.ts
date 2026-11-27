@@ -1060,6 +1060,435 @@ export declare const domains: import("drizzle-orm/pg-core").PgTableWithColumns<{
     dialect: "pg";
 }>;
 /**
+ * Anonymous identities are independent of registered users.
+ * Only the credential hash is stored; raw API keys/cookies never enter PostgreSQL.
+ */
+export declare const anonymousIdentities: import("drizzle-orm/pg-core").PgTableWithColumns<{
+    name: "anonymous_identities";
+    schema: undefined;
+    columns: {
+        id: import("drizzle-orm/pg-core").PgColumn<{
+            name: "id";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: true;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        keyHash: import("drizzle-orm/pg-core").PgColumn<{
+            name: "key_hash";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgChar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 64;
+        }>;
+        keyPrefix: import("drizzle-orm/pg-core").PgColumn<{
+            name: "key_prefix";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 16;
+        }>;
+        type: import("drizzle-orm/pg-core").PgColumn<{
+            name: "type";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 1;
+        }>;
+        plan: import("drizzle-orm/pg-core").PgColumn<{
+            name: "plan";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 30;
+        }>;
+        rateLimit: import("drizzle-orm/pg-core").PgColumn<{
+            name: "rate_limit";
+            tableName: "anonymous_identities";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "created_at";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        lastLinkCreatedAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "last_link_created_at";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        expiresAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "expires_at";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        revokedAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "revoked_at";
+            tableName: "anonymous_identities";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+    };
+    dialect: "pg";
+}>;
+/**
+ * Transactional outbox. Domain mutations and their immutable event envelope
+ * are committed atomically; dispatch is at-least-once.
+ */
+export declare const eventOutbox: import("drizzle-orm/pg-core").PgTableWithColumns<{
+    name: "event_outbox";
+    schema: undefined;
+    columns: {
+        id: import("drizzle-orm/pg-core").PgColumn<{
+            name: "id";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: true;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        eventId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "event_id";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        eventType: import("drizzle-orm/pg-core").PgColumn<{
+            name: "event_type";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 100;
+        }>;
+        eventVersion: import("drizzle-orm/pg-core").PgColumn<{
+            name: "event_version";
+            tableName: "event_outbox";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        aggregateType: import("drizzle-orm/pg-core").PgColumn<{
+            name: "aggregate_type";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 50;
+        }>;
+        aggregateId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "aggregate_id";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgVarchar";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            length: 64;
+        }>;
+        payload: import("drizzle-orm/pg-core").PgColumn<{
+            name: "payload";
+            tableName: "event_outbox";
+            dataType: "json";
+            columnType: "PgJsonb";
+            data: Record<string, unknown>;
+            driverParam: unknown;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            $type: Record<string, unknown>;
+        }>;
+        occurredAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "occurred_at";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        availableAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "available_at";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        publishedAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "published_at";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        attempts: import("drizzle-orm/pg-core").PgColumn<{
+            name: "attempts";
+            tableName: "event_outbox";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        lastError: import("drizzle-orm/pg-core").PgColumn<{
+            name: "last_error";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "created_at";
+            tableName: "event_outbox";
+            dataType: "string";
+            columnType: "PgTimestampString";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+    };
+    dialect: "pg";
+}>;
+/**
  * Link registrati nel database.
  * Lo slug è univoco soltanto all'interno dello stesso dominio.
  */
@@ -1146,7 +1575,24 @@ export declare const links: import("drizzle-orm/pg-core").PgTableWithColumns<{
             columnType: "PgUUID";
             data: string;
             driverParam: string;
-            notNull: true;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        anonymousIdentityId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "anonymous_identity_id";
+            tableName: "links";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: false;
             hasDefault: false;
             isPrimaryKey: false;
             isAutoincrement: false;
@@ -1753,7 +2199,7 @@ export declare const planCapabilities: import("drizzle-orm/pg-core").PgTableWith
 }>;
 /**
  * Entitlement concessi su uno specifico NinjaLink.
- * La validità temporale è valutata dal resolver a runtime.
+ * La validitÃƒÂ  temporale ÃƒÂ¨ valutata dal resolver a runtime.
  */
 export declare const linkEntitlements: import("drizzle-orm/pg-core").PgTableWithColumns<{
     name: "link_entitlements";

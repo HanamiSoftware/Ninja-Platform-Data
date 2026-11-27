@@ -13,17 +13,17 @@ It does not own application API behavior, browser UI, authentication SDK behavio
 
 ## 2. Current source snapshot
 
-| Item | Observed state |
-|---|---|
-| Package | `@hanami-software/platform-data` (`private: true` in package metadata) |
-| Version | `0.1.7` |
-| Module format | ESM |
-| Build output | `dist/index.js`, declarations in `dist/index.d.ts` |
-| Package file allowlist | `dist`, `migrations`, `README.md` |
-| Database connection | `DATABASE_URL` from environment configuration |
-| Normal migration output | `migrations/` |
-| Test-fixture migration output | `test-fixtures/migrations/` |
-| Fixture migration table | `__drizzle_test_fixtures_migrations` |
+| Item                          | Observed state                                                         |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| Package                       | `@hanami-software/platform-data` (`private: true` in package metadata) |
+| Version                       | `0.1.7`                                                                |
+| Module format                 | ESM                                                                    |
+| Build output                  | `dist/index.js`, declarations in `dist/index.d.ts`                     |
+| Package file allowlist        | `dist`, `migrations`, `README.md`                                      |
+| Database connection           | `DATABASE_URL` from environment configuration                          |
+| Normal migration output       | `migrations/`                                                          |
+| Test-fixture migration output | `test-fixtures/migrations/`                                            |
+| Fixture migration table       | `__drizzle_test_fixtures_migrations`                                   |
 
 The package metadata includes `README.md` in its file allowlist. This branch adds the missing root README so the package metadata and repository contents agree.
 
@@ -44,6 +44,7 @@ A test database connection string was committed in an earlier Git revision and t
 Francesco reports that Neon suspended the affected test databases pending password rotation. At the time of this review, the new password had not yet been set.
 
 Required closure steps are tracked in the NinjaURL [Project Control Room](https://github.com/HanamiSoftware/NinjaURL-URL-Shortener/blob/dev/docs/PROJECT-CONTROL-ROOM.md):
+
 1. Rotate the test database password in Neon.
 2. Update the shared repository/environment secret consumed by the Workers.
 3. Verify every intended consumer.
@@ -69,6 +70,7 @@ The current `.gitignore` ignores `.env`, but does not contain a rule for the spe
 ## 6. Current documentation task
 
 This branch adds:
+
 - a root README describing package purpose, scripts, migration separation and security rules;
 - this status document recording the package snapshot and outstanding credential hygiene.
 

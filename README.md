@@ -10,6 +10,7 @@ Shared PostgreSQL schema, relations and data-access primitives used by the Ninja
 ## Ownership
 
 This repository owns:
+
 - shared database schema definitions;
 - Drizzle relations and database construction;
 - application migration files;
@@ -30,14 +31,14 @@ npm run generate
 
 Useful scripts:
 
-| Script | Purpose |
-|---|---|
-| `build` | Compile TypeScript into `dist` |
-| `typecheck` | Type-check without emitting |
-| `generate` | Generate Drizzle migrations from schema changes |
-| `migrate` | Apply the normal migration sequence |
+| Script                  | Purpose                                            |
+| ----------------------- | -------------------------------------------------- |
+| `build`                 | Compile TypeScript into `dist`                     |
+| `typecheck`             | Type-check without emitting                        |
+| `generate`              | Generate Drizzle migrations from schema changes    |
+| `migrate`               | Apply the normal migration sequence                |
 | `migrate:test-fixtures` | Apply the separate test-fixture migration sequence |
-| `lint` | Run ESLint |
+| `lint`                  | Run ESLint                                         |
 
 Database configuration is read from `DATABASE_URL` via environment configuration. Never commit a connection string, password, token or populated local environment file.
 

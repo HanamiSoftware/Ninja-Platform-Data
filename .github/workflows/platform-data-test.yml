@@ -1,140 +1,140 @@
 name: Platform Data CI
 
 on:
-  pull_request:
-    paths:
-      - "src/**"
-      - "migrations/**"
-      - "drizzle.config.ts"
-      - "package.json"
-      - "package-lock.json"
-      - "tsconfig.json"
-      - ".github/workflows/platform-data-test.yml"
-      - "scripts/**"
-  push:
-    branches:
-      - main
-    paths:
-      - "src/**"
-      - "migrations/**"
-      - "drizzle.config.ts"
-      - "package.json"
-      - "package-lock.json"
-      - "tsconfig.json"
-      - ".github/workflows/platform-data-test.yml"
-      - "scripts/**"
-  workflow_dispatch:
-    inputs:
-      apply_test_account_plans:
-        description: "Apply the FREE / PRO / PRO+ subscriptions to the supplied test users"
-        required: true
-        type: boolean
-        default: false
-      confirm_test_database:
-        description: "Explicitly confirm that the Hyperdrive secret points to the test database"
-        required: true
-        type: choice
-        options:
-          - NO
-          - YES_I_CONFIRM_TEST_DATABASE
-        default: NO
-      free_user_id:
-        description: "Existing users.id for the FREE test account (UUID)"
-        required: false
-        type: string
-      pro_user_id:
-        description: "Existing users.id for the PRO test account (UUID)"
-        required: false
-        type: string
-      pro_plus_user_id:
-        description: "Existing users.id for the PRO+ test account (UUID)"
-        required: false
-        type: string
+    pull_request:
+        paths:
+            - "src/**"
+            - "migrations/**"
+            - "drizzle.config.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig.json"
+            - ".github/workflows/platform-data-test.yml"
+            - "scripts/**"
+    push:
+        branches:
+            - main
+        paths:
+            - "src/**"
+            - "migrations/**"
+            - "drizzle.config.ts"
+            - "package.json"
+            - "package-lock.json"
+            - "tsconfig.json"
+            - ".github/workflows/platform-data-test.yml"
+            - "scripts/**"
+    workflow_dispatch:
+        inputs:
+            apply_test_account_plans:
+                description: "Apply the FREE / PRO / PRO+ subscriptions to the supplied test users"
+                required: true
+                type: boolean
+                default: false
+            confirm_test_database:
+                description: "Explicitly confirm that the Hyperdrive secret points to the test database"
+                required: true
+                type: choice
+                options:
+                    - NO
+                    - YES_I_CONFIRM_TEST_DATABASE
+                default: NO
+            free_user_id:
+                description: "Existing users.id for the FREE test account (UUID)"
+                required: false
+                type: string
+            pro_user_id:
+                description: "Existing users.id for the PRO test account (UUID)"
+                required: false
+                type: string
+            pro_plus_user_id:
+                description: "Existing users.id for the PRO+ test account (UUID)"
+                required: false
+                type: string
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: platform-data-ci-${{ github.ref }}
-  cancel-in-progress: false
+    group: platform-data-ci-${{ github.ref }}
+    cancel-in-progress: false
 
 jobs:
-  validate:
-    name: Install, typecheck, generate and test Source
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    validate:
+        name: Install, typecheck, generate and test Source
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Typecheck Source Data
-        run: npm run typecheck
+            - name: Typecheck Source Data
+              run: npm run typecheck
 
-      - name: Generate Database
-        run: npm run generate
+            - name: Generate Database
+              run: npm run generate
 
-      - name: Upload generated Drizzle artifacts for review
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: drizzle-generated-artifacts
-          path: |
-            migrations/*.sql
-            migrations/meta/*.json
-          if-no-files-found: error
-          retention-days: 3
+            - name: Upload generated Drizzle artifacts for review
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: drizzle-generated-artifacts
+                  path: |
+                      migrations/*.sql
+                      migrations/meta/*.json
+                  if-no-files-found: error
+                  retention-days: 3
 
-      - name: Verify generated schema and migrations are committed
-        shell: bash
-        run: |
-          if [ -n "$(git status --porcelain -- src/schema migrations)" ]; then
-            echo "::error::Drizzle generation changed schema or migration artifacts. Run npm run generate locally and commit the generated files."
-            git status --short -- src/schema migrations
-            git diff -- src/schema migrations
-            exit 1
-          fi
+            - name: Verify generated schema and migrations are committed
+              shell: bash
+              run: |
+                  if [ -n "$(git status --porcelain -- src/schema migrations)" ]; then
+                    echo "::error::Drizzle generation changed schema or migration artifacts. Run npm run generate locally and commit the generated files."
+                    git status --short -- src/schema migrations
+                    git diff -- src/schema migrations
+                    exit 1
+                  fi
 
-  database-connection:
-    name: Test DB connectivity and optionally assign test plans
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.apply_test_account_plans == true && inputs.confirm_test_database == 'YES_I_CONFIRM_TEST_DATABASE')
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    database-connection:
+        name: Test DB connectivity and optionally assign test plans
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.apply_test_account_plans == true && inputs.confirm_test_database == 'YES_I_CONFIRM_TEST_DATABASE')
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Test Connection to Database
-        env:
-          DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
-        run: npx tsx src/test-db.ts
+            - name: Test Connection to Database
+              env:
+                  DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
+              run: npx tsx src/test-db.ts
 
-      - name: Assign plans to the three existing test accounts
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
-          CONFIRM_TEST_DATABASE: ${{ inputs.confirm_test_database }}
-          FREE_USER_ID: ${{ inputs.free_user_id }}
-          PRO_USER_ID: ${{ inputs.pro_user_id }}
-          PRO_PLUS_USER_ID: ${{ inputs.pro_plus_user_id }}
-        run: npm run assign:test-account-plans
+            - name: Assign plans to the three existing test accounts
+              if: github.event_name == 'workflow_dispatch'
+              env:
+                  DATABASE_URL: ${{ secrets.CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE }}
+                  CONFIRM_TEST_DATABASE: ${{ inputs.confirm_test_database }}
+                  FREE_USER_ID: ${{ inputs.free_user_id }}
+                  PRO_USER_ID: ${{ inputs.pro_user_id }}
+                  PRO_PLUS_USER_ID: ${{ inputs.pro_plus_user_id }}
+              run: npm run assign:test-account-plans

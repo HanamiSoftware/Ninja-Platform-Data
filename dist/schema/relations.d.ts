@@ -32,8 +32,12 @@ export declare const domainsRelations: import("drizzle-orm").Relations<"domains"
     owner: import("drizzle-orm").One<"users", false>;
     links: import("drizzle-orm").Many<"links">;
 }>;
+export declare const anonymousIdentitiesRelations: import("drizzle-orm").Relations<"anonymous_identities", {
+    links: import("drizzle-orm").Many<"links">;
+}>;
 export declare const linksRelations: import("drizzle-orm").Relations<"links", {
-    user: import("drizzle-orm").One<"users", true>;
+    user: import("drizzle-orm").One<"users", false>;
+    anonymousIdentity: import("drizzle-orm").One<"anonymous_identities", false>;
     domain: import("drizzle-orm").One<"domains", true>;
 }>;
 export declare const linkSyncJobsRelations: import("drizzle-orm").Relations<"link_sync_jobs", {

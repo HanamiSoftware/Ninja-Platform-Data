@@ -1,97 +1,97 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1792591914090,
-      "tag": "0000_bored_goblin_queen",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1792743094542,
-      "tag": "0001_easy_medusa",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1792851052424,
-      "tag": "0002_long_spiral",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1792934999545,
-      "tag": "0003_seed_ninjaurl_plans",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1793106000000,
-      "tag": "0004_add_capabilities",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1793109600000,
-      "tag": "0005_fix_subscription_plan_foreign_key",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1793263317182,
-      "tag": "0006_add_application_rbac",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1793271840000,
-      "tag": "0007_add_admin_role_assignment_capability",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1793280000000,
-      "tag": "0008_add_missing_rbac_capabilities",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1793290000000,
-      "tag": "0009_add_capability_release_state",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1793291000000,
-      "tag": "0010_add_capability_release_admin_permission",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1794225600000,
-      "tag": "0011_add_internal_oauth_clients",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "7",
-      "when": 1795785600000,
-      "tag": "0012_anonymous_links_and_event_outbox",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "postgresql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "7",
+            "when": 1792591914090,
+            "tag": "0000_bored_goblin_queen",
+            "breakpoints": true
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1792743094542,
+            "tag": "0001_easy_medusa",
+            "breakpoints": true
+        },
+        {
+            "idx": 2,
+            "version": "7",
+            "when": 1792851052424,
+            "tag": "0002_long_spiral",
+            "breakpoints": true
+        },
+        {
+            "idx": 3,
+            "version": "7",
+            "when": 1792934999545,
+            "tag": "0003_seed_ninjaurl_plans",
+            "breakpoints": true
+        },
+        {
+            "idx": 4,
+            "version": "7",
+            "when": 1793106000000,
+            "tag": "0004_add_capabilities",
+            "breakpoints": true
+        },
+        {
+            "idx": 5,
+            "version": "7",
+            "when": 1793109600000,
+            "tag": "0005_fix_subscription_plan_foreign_key",
+            "breakpoints": true
+        },
+        {
+            "idx": 6,
+            "version": "7",
+            "when": 1793263317182,
+            "tag": "0006_add_application_rbac",
+            "breakpoints": true
+        },
+        {
+            "idx": 7,
+            "version": "7",
+            "when": 1793271840000,
+            "tag": "0007_add_admin_role_assignment_capability",
+            "breakpoints": true
+        },
+        {
+            "idx": 8,
+            "version": "7",
+            "when": 1793280000000,
+            "tag": "0008_add_missing_rbac_capabilities",
+            "breakpoints": true
+        },
+        {
+            "idx": 9,
+            "version": "7",
+            "when": 1793290000000,
+            "tag": "0009_add_capability_release_state",
+            "breakpoints": true
+        },
+        {
+            "idx": 10,
+            "version": "7",
+            "when": 1793291000000,
+            "tag": "0010_add_capability_release_admin_permission",
+            "breakpoints": true
+        },
+        {
+            "idx": 11,
+            "version": "7",
+            "when": 1794225600000,
+            "tag": "0011_add_internal_oauth_clients",
+            "breakpoints": true
+        },
+        {
+            "idx": 12,
+            "version": "7",
+            "when": 1795785600000,
+            "tag": "0012_anonymous_links_and_event_outbox",
+            "breakpoints": true
+        }
+    ]
 }

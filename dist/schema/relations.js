@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, authSessions, products, plans, subscriptions, links, apiKeys, domains, linkSyncJobs, capabilities, planCapabilities, linkEntitlements, roles, authCapabilities, roleCapabilities, userRoles, } from "./schema.js";
+import { users, authSessions, products, plans, subscriptions, links, anonymousIdentities, apiKeys, domains, linkSyncJobs, capabilities, planCapabilities, linkEntitlements, roles, authCapabilities, roleCapabilities, userRoles, } from "./schema.js";
 export const authSessionsRelations = relations(authSessions, ({ one }) => ({
     user: one(users, {
         fields: [authSessions.userId],
@@ -41,14 +41,8 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
         references: [products.id],
     }),
     plan: one(plans, {
-        fields: [
-            subscriptions.productId,
-            subscriptions.planId,
-        ],
-        references: [
-            plans.productId,
-            plans.id,
-        ],
+        fields: [subscriptions.productId, subscriptions.planId],
+        references: [plans.productId, plans.id],
     }),
 }));
 export const domainsRelations = relations(domains, ({ one, many }) => ({
@@ -58,10 +52,17 @@ export const domainsRelations = relations(domains, ({ one, many }) => ({
     }),
     links: many(links),
 }));
+export const anonymousIdentitiesRelations = relations(anonymousIdentities, ({ many }) => ({
+    links: many(links),
+}));
 export const linksRelations = relations(links, ({ one }) => ({
     user: one(users, {
         fields: [links.userId],
         references: [users.id],
+    }),
+    anonymousIdentity: one(anonymousIdentities, {
+        fields: [links.anonymousIdentityId],
+        references: [anonymousIdentities.id],
     }),
     domain: one(domains, {
         fields: [links.domainId],

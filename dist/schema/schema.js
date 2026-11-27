@@ -7,10 +7,10 @@ export const products = pgTable("products", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
-}, (table) => [
-    unique("products_code_key").on(table.code),
-]);
+    })
+        .defaultNow()
+        .notNull(),
+}, (table) => [unique("products_code_key").on(table.code)]);
 export const users = pgTable("users", {
     id: uuid().defaultRandom().primaryKey().notNull(),
     authProvider: varchar("auth_provider", { length: 50 }).notNull(),
@@ -21,18 +21,20 @@ export const users = pgTable("users", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     lastLoginAt: timestamp("last_login_at", {
         withTimezone: true,
         mode: "string",
     }),
-}, (table) => [
-    unique("uq_users_auth_subject").on(table.authSubject),
-]);
+}, (table) => [unique("uq_users_auth_subject").on(table.authSubject)]);
 export const authSessions = pgTable("auth_sessions", {
     id: uuid().defaultRandom().primaryKey().notNull(),
     userId: uuid("user_id").notNull(),
@@ -42,11 +44,15 @@ export const authSessions = pgTable("auth_sessions", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     lastUsedAt: timestamp("last_used_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     expiresAt: timestamp("expires_at", {
         withTimezone: true,
         mode: "string",
@@ -79,7 +85,9 @@ export const plans = pgTable("plans", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     foreignKey({
         columns: [table.productId],
@@ -106,14 +114,20 @@ export const subscriptions = pgTable("subscriptions", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     index("idx_subscriptions_user_product").on(table.userId, table.productId),
-    uniqueIndex("uq_active_subscription_per_product").on(table.userId, table.productId).where(sql `status IN ('trialing', 'active', 'past_due')`),
+    uniqueIndex("uq_active_subscription_per_product")
+        .on(table.userId, table.productId)
+        .where(sql `status IN ('trialing', 'active', 'past_due')`),
     foreignKey({
         columns: [table.userId],
         foreignColumns: [users.id],
@@ -142,7 +156,9 @@ export const apiKeys = pgTable("api_keys", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     lastUsedAt: timestamp("last_used_at", {
         withTimezone: true,
         mode: "string",
@@ -192,11 +208,15 @@ export const domains = pgTable("domains", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_domains_hostname").on(table.hostname),
     index("idx_domains_user_status").on(table.userId, table.status),
@@ -217,6 +237,87 @@ export const domains = pgTable("domains", {
     check("chk_domains_active_verified", sql `status <> 'active' OR verified_at IS NOT NULL`),
 ]);
 /**
+ * Anonymous identities are independent of registered users.
+ * Only the credential hash is stored; raw API keys/cookies never enter PostgreSQL.
+ */
+export const anonymousIdentities = pgTable("anonymous_identities", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    keyHash: char("key_hash", { length: 64 }).notNull(),
+    keyPrefix: varchar("key_prefix", { length: 16 }).notNull(),
+    type: varchar({ length: 1 }).default("R").notNull(),
+    plan: varchar({ length: 30 }).default("anonimo").notNull(),
+    rateLimit: integer("rate_limit").notNull(),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    })
+        .defaultNow()
+        .notNull(),
+    lastLinkCreatedAt: timestamp("last_link_created_at", {
+        withTimezone: true,
+        mode: "string",
+    }).notNull(),
+    expiresAt: timestamp("expires_at", {
+        withTimezone: true,
+        mode: "string",
+    }).notNull(),
+    revokedAt: timestamp("revoked_at", {
+        withTimezone: true,
+        mode: "string",
+    }),
+}, (table) => [
+    unique("uq_anonymous_identities_key_hash").on(table.keyHash),
+    index("idx_anonymous_identities_expires_at")
+        .on(table.expiresAt)
+        .where(sql `revoked_at IS NULL`),
+    check("chk_anonymous_identities_type", sql `type = 'R'`),
+    check("chk_anonymous_identities_plan", sql `plan = 'anonimo'`),
+    check("chk_anonymous_identities_rate_limit", sql `rate_limit > 0`),
+]);
+/**
+ * Transactional outbox. Domain mutations and their immutable event envelope
+ * are committed atomically; dispatch is at-least-once.
+ */
+export const eventOutbox = pgTable("event_outbox", {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    eventId: uuid("event_id").notNull(),
+    eventType: varchar("event_type", { length: 100 }).notNull(),
+    eventVersion: integer("event_version").notNull(),
+    aggregateType: varchar("aggregate_type", { length: 50 }).notNull(),
+    aggregateId: varchar("aggregate_id", { length: 64 }).notNull(),
+    payload: jsonb("payload").$type().notNull(),
+    occurredAt: timestamp("occurred_at", {
+        withTimezone: true,
+        mode: "string",
+    }).notNull(),
+    availableAt: timestamp("available_at", {
+        withTimezone: true,
+        mode: "string",
+    })
+        .defaultNow()
+        .notNull(),
+    publishedAt: timestamp("published_at", {
+        withTimezone: true,
+        mode: "string",
+    }),
+    attempts: integer().default(0).notNull(),
+    lastError: text("last_error"),
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+        mode: "string",
+    })
+        .defaultNow()
+        .notNull(),
+}, (table) => [
+    unique("uq_event_outbox_event_id").on(table.eventId),
+    index("idx_event_outbox_pending")
+        .on(table.availableAt, table.createdAt)
+        .where(sql `published_at IS NULL`),
+    index("idx_event_outbox_aggregate").on(table.aggregateType, table.aggregateId),
+    check("chk_event_outbox_attempts", sql `attempts >= 0`),
+    check("chk_event_outbox_version", sql `event_version > 0`),
+]);
+/**
  * Link registrati nel database.
  * Lo slug è univoco soltanto all'interno dello stesso dominio.
  */
@@ -225,15 +326,20 @@ export const links = pgTable("links", {
     domainId: uuid("domain_id").notNull(),
     slug: varchar({ length: 32 }).notNull(),
     target: text().notNull(),
-    userId: uuid("user_id").notNull(),
+    userId: uuid("user_id"),
+    anonymousIdentityId: uuid("anonymous_identity_id"),
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     expiresAt: timestamp("expires_at", {
         withTimezone: true,
         mode: "string",
@@ -242,6 +348,14 @@ export const links = pgTable("links", {
     unique("uq_links_domain_slug").on(table.domainId, table.slug),
     index("idx_links_user_created_at").on(table.userId, table.createdAt),
     index("idx_links_domain_id").on(table.domainId),
+    index("idx_links_anonymous_identity_created_at")
+        .on(table.anonymousIdentityId, table.createdAt)
+        .where(sql `anonymous_identity_id IS NOT NULL`),
+    foreignKey({
+        columns: [table.anonymousIdentityId],
+        foreignColumns: [anonymousIdentities.id],
+        name: "links_anonymous_identity_id_fkey",
+    }).onDelete("restrict"),
     foreignKey({
         columns: [table.userId],
         foreignColumns: [users.id],
@@ -253,6 +367,12 @@ export const links = pgTable("links", {
         name: "links_domain_id_fkey",
     }).onDelete("restrict"),
     check("chk_links_slug_format", sql `slug ~ '^[A-Za-z0-9_-]{3,32}$'`),
+    check("chk_links_exactly_one_owner", sql `(
+        (user_id IS NOT NULL AND anonymous_identity_id IS NULL)
+        OR
+        (user_id IS NULL AND anonymous_identity_id IS NOT NULL)
+      )`),
+    check("chk_links_anonymous_expiry", sql `anonymous_identity_id IS NULL OR expires_at IS NOT NULL`),
 ]);
 /**
  * Stato persistente del trasferimento dei link anonimi
@@ -285,11 +405,15 @@ export const linkSyncJobs = pgTable("link_sync_jobs", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_link_sync_jobs_anonymous_key").on(table.anonymousKeyHash),
     index("idx_link_sync_jobs_user_status").on(table.userId, table.status),
@@ -319,7 +443,9 @@ export const capabilities = pgTable("capabilities", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_capabilities_product_code").on(table.productId, table.code),
     unique("uq_capabilities_product_id_pair").on(table.productId, table.id),
@@ -348,11 +474,15 @@ export const planCapabilities = pgTable("plan_capabilities", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_plan_capabilities_plan_capability").on(table.planId, table.capabilityId),
     index("idx_plan_capabilities_product").on(table.productId),
@@ -369,7 +499,7 @@ export const planCapabilities = pgTable("plan_capabilities", {
 ]);
 /**
  * Entitlement concessi su uno specifico NinjaLink.
- * La validità temporale è valutata dal resolver a runtime.
+ * La validitÃƒÂ  temporale ÃƒÂ¨ valutata dal resolver a runtime.
  */
 export const linkEntitlements = pgTable("link_entitlements", {
     id: uuid().defaultRandom().primaryKey().notNull(),
@@ -380,7 +510,9 @@ export const linkEntitlements = pgTable("link_entitlements", {
     grantedAt: timestamp("granted_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     expiresAt: timestamp("expires_at", {
         withTimezone: true,
         mode: "string",
@@ -417,7 +549,9 @@ export const roles = pgTable("roles", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_roles_product_code").on(table.productId, table.code),
     unique("uq_roles_product_id_pair").on(table.productId, table.id),
@@ -441,7 +575,9 @@ export const authCapabilities = pgTable("auth_capabilities", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_auth_capabilities_product_code").on(table.productId, table.code),
     unique("uq_auth_capabilities_product_id_pair").on(table.productId, table.id),
@@ -464,7 +600,9 @@ export const roleCapabilities = pgTable("role_capabilities", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_role_capabilities_role_capability").on(table.roleId, table.capabilityId),
     index("idx_role_capabilities_product_role").on(table.productId, table.roleId),
@@ -496,11 +634,15 @@ export const userRoles = pgTable("user_roles", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_user_roles_user_product").on(table.userId, table.productId),
     index("idx_user_roles_product_role").on(table.productId, table.roleId),
@@ -535,11 +677,15 @@ export const oauthClientsInternal = pgTable("oauth_clients_internal", {
     createdAt: timestamp("created_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
         mode: "string",
-    }).defaultNow().notNull(),
+    })
+        .defaultNow()
+        .notNull(),
 }, (table) => [
     unique("uq_oauth_clients_internal_client_id").on(table.clientId),
     check("chk_oauth_clients_internal_client_id_nonempty", sql `length(btrim(client_id)) > 0`),

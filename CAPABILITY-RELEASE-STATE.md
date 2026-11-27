@@ -15,10 +15,10 @@ The boolean `capabilities.released` is the product-publication switch. It is sep
 
 - `src/schema/schema.ts`: `capabilities.released` is a non-null boolean defaulting to `false`.
 - `migrations/0009_add_capability_release_state.sql`: adds the field and marks these already-shipped NinjaURL account capabilities as released:
-  - `link.create`
-  - `link.customSlug`
-  - `link.customDomain`
-  - `qr.generate`
+    - `link.create`
+    - `link.customSlug`
+    - `link.customDomain`
+    - `qr.generate`
 - `migrations/0010_add_capability_release_admin_permission.sql`: registers `admin.capabilities.release` and grants it to the existing NinjaURL admin role.
 
 ## Runtime contract
@@ -36,7 +36,6 @@ The boolean `capabilities.released` is the product-publication switch. It is sep
 3. Do not expose internal-only catalog descriptions on a public roadmap without reviewing them for public suitability.
 4. Keep release state, plan entitlement, resource state, and implementation readiness as distinct concepts.
 5. No production migration, database write, release toggle, merge, or deployment should occur without explicit authorization.
-
 
 ## Integration status — 2026-11-04
 
@@ -58,4 +57,5 @@ The boolean `capabilities.released` is the product-publication switch. It is sep
 4. Validate account capabilities, public roadmap, and admin release endpoints end-to-end against that database and the deployed Worker configuration.
 
 ## Integration status 2026-11-11
-Current package v0.1.7 including Test Users and test data for staging tests  
+
+Current package v0.1.7 including Test Users and test data for staging tests

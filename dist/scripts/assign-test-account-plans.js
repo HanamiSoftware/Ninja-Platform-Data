@@ -83,7 +83,11 @@ async function main() {
                 if (activeSubscriptions.length === 1) {
                     const current = activeSubscriptions[0];
                     if (String(current.plan_id) === planId) {
-                        applied.push({ label: account.label, planCode: account.planCode, action: "already-correct" });
+                        applied.push({
+                            label: account.label,
+                            planCode: account.planCode,
+                            action: "already-correct",
+                        });
                     }
                     else {
                         await tx `
@@ -92,7 +96,11 @@ async function main() {
                   updated_at = now()
               WHERE id = ${String(current.id)}::uuid
             `;
-                        applied.push({ label: account.label, planCode: account.planCode, action: "plan-updated" });
+                        applied.push({
+                            label: account.label,
+                            planCode: account.planCode,
+                            action: "plan-updated",
+                        });
                     }
                 }
                 else {
@@ -116,7 +124,11 @@ async function main() {
               now()
             )
           `;
-                    applied.push({ label: account.label, planCode: account.planCode, action: "subscription-created" });
+                    applied.push({
+                        label: account.label,
+                        planCode: account.planCode,
+                        action: "subscription-created",
+                    });
                 }
             }
             return applied;

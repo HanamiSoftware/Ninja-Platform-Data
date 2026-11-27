@@ -7,11 +7,11 @@ They are intended for a disposable development or staging database only.
 
 The migration creates three synthetic NinjaURL accounts:
 
-| Fixture | Plan | Email | Link slug |
-|---|---|---|---|
-| FREE | `free` | `ninjaurl.fixture+free@example.invalid` | `test-free` |
-| PRO | `pro` | `ninjaurl.fixture+pro@example.invalid` | `test-pro` |
-| PRO+ | `pro_plus` | `ninjaurl.fixture+pro-plus@example.invalid` | `test-proplus` |
+| Fixture | Plan       | Email                                       | Link slug      |
+| ------- | ---------- | ------------------------------------------- | -------------- |
+| FREE    | `free`     | `ninjaurl.fixture+free@example.invalid`     | `test-free`    |
+| PRO     | `pro`      | `ninjaurl.fixture+pro@example.invalid`      | `test-pro`     |
+| PRO+    | `pro_plus` | `ninjaurl.fixture+pro-plus@example.invalid` | `test-proplus` |
 
 Each account receives the NinjaURL `user` role, an active subscription for its plan,
 and one link on the existing default `n2l.ink` domain.
@@ -44,7 +44,6 @@ For a URL without existing query parameters, the option can be supplied as:
 ```
 
 If the option is absent, the migration fails closed before inserting any fixture data.
-
 
 ## Stato e utilizzo per la demo del 10 novembre 2026
 
