@@ -439,7 +439,20 @@ export const links = pgTable(
     }).onDelete("restrict"),
     check(
       "chk_links_slug_format",
-      sql`slug ~ '^[A-Za-z0-9_-]{3,32}
+      sql`slug ~ '^[A-Za-z0-9_-]{3,32}$'`,
+    ),
+    check(
+      "chk_links_exactly_one_owner",
+      sql`(
+        (user_id IS NOT NULL AND anonymous_identity_id IS NULL)
+        OR
+        (user_id IS NULL AND anonymous_identity_id IS NOT NULL)
+      )`,
+    ),
+    check(
+      "chk_links_anonymous_expiry",
+      sql`anonymous_identity_id IS NULL OR expires_at IS NOT NULL`,
+    ),
   ],
 );
 
